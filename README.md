@@ -26,4 +26,4 @@ Nikita Fedans: Backend + Architecture
 
 
 
-<img src="https://user-images.githubusercontent.com/92158821/196925872-a2b153f5-985d-4bb5-842b-8745cbf8497d.png" width ="400px">
+ ![shake-and-bake-ricky-bobby](https://user-images.githubusercontent.com/92158849/159341385-9904389c-ab90-4457-977c-fbff50b99984.gif)
