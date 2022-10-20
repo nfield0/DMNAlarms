@@ -9,7 +9,7 @@ Nathan Field: Backend + Testing
 Nikita Fedans: Backend + Architecture
 
 
-<img src="https://user-images.githubusercontent.com/92158821/196925554-96618cda-3177-464b-b860-8b97d5b9e615.png" width="200px">
+<img src="https://user-images.githubusercontent.com/92158821/196925554-96618cda-3177-464b-b860-8b97d5b9e615.png" width="800px">
 
 
 
@@ -26,4 +26,4 @@ Nikita Fedans: Backend + Architecture
 
 
 
-<img src="https://user-images.githubusercontent.com/92158821/196925872-a2b153f5-985d-4bb5-842b-8745cbf8497d.png" width ="200"px>
+<img src="https://user-images.githubusercontent.com/92158821/196925872-a2b153f5-985d-4bb5-842b-8745cbf8497d.png" width ="400px">
