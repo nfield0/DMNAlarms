@@ -8,20 +8,12 @@ Michael Flynn: Database + Testing
 Nathan Field: Backend + Testing
 Nikita Fedans: Backend + Architecture
 
+### View our figma design
+![qr](https://user-images.githubusercontent.com/92158849/196928241-ce39f82f-f61a-495d-b705-b29b1a206641.png)
+
+
 
 <img src="https://user-images.githubusercontent.com/92158821/196925554-96618cda-3177-464b-b860-8b97d5b9e615.png" width="800px">
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
