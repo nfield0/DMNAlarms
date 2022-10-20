@@ -8,6 +8,10 @@ Michael Flynn: Database + Testing
 Nathan Field: Backend + Testing
 Nikita Fedans: Backend + Architecture
 
+## DMN SYSTEMS MERCH ---- 
+![image](https://user-images.githubusercontent.com/92158849/197026688-d69ecb28-ecb7-4c94-bab0-db62839267d8.png)
+![image](https://user-images.githubusercontent.com/92158849/197026716-1d6d5b80-28f9-4326-8c79-c4c2513e6bfd.png)
+
 ### View our figma design
 ![qr](https://user-images.githubusercontent.com/92158849/196928241-ce39f82f-f61a-495d-b705-b29b1a206641.png)
 
