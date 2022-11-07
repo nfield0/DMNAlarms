@@ -49,8 +49,8 @@ FOREIGN KEY(access_id) REFERENCES access_id(access_table));
 CREATE TABLE motion(
 motion_id INT NOT NULL AUTO_INCREMENT,
 motion_date DATE,
-motion_time TIME
-);
+motion_time TIME,
+PRIMARY KEY(motion_id));
 
 
 /*Very basic queries that get all the data from each table*/
