@@ -1,16 +1,31 @@
-<html>
-	<head>
-		<title>Getting Sensors Online</title>
-	</head>
-	<body onload="keepAlive(); time(); setupPubNub();">
-		<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.0.js"></script>
-		<script src="static/js/main.js"></script>
-		<h1> Online </h1>
-		<h2>Connection: <span id="Connection_id">...</span></h2>
-		<h2>Motion: <span id="motion_id">...</span></h2>
-		<div>
-			<input type="checkbox" id="buzzer" onclick="handleClick(this);"/>
-			<label id="buzzer_on">Buzzer On</label>
-		</div>
-	</body>
-</html>
+{% extends "layout.html" %}
+{% block body %}
+{% if session.name %}
+    You are logged in as {{session.name}}
+    <a href="/logout">Log out</a>
+{% else %}
+    You are not logged in.<a href="/login">Log in</a>
+{% endif %}
+{% endblock %}
+
+
+
+
+
+
+<!--<html>-->
+<!--	<head>-->
+<!--		<title>Getting Sensors Online</title>-->
+<!--	</head>-->
+<!--	<body onload="keepAlive(); time(); setupPubNub();">-->
+<!--		<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.0.js"></script>-->
+<!--		<script src="static/js/main.js"></script>-->
+<!--		<h1> Online </h1>-->
+<!--		<h2>Connection: <span id="Connection_id">...</span></h2>-->
+<!--		<h2>Motion: <span id="motion_id">...</span></h2>-->
+<!--		<div>-->
+<!--			<input type="checkbox" id="buzzer" onclick="handleClick(this);"/>-->
+<!--			<label id="buzzer_on">Buzzer On</label>-->
+<!--		</div>-->
+<!--	</body>-->
+<!--</html>-->
