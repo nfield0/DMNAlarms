@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-<form action = "/login" method = "post">
-  <input autocomplete="off" autofocus name="name" placeholder="Name" type="text">
-  <input type = "submit">
-</form>
+<div class="login-box">
+  <div class="login-box-inner">
+    <form action="/login" method="post">
+      <input autocomplete="off" autofocus name="name" placeholder="Name" type="text">
+      <input autocomplete="off" autofocus name="name" placeholder="Password" type="text">
+      <input type="submit">
+    </form>
+  </div>
+</div>
+
 {% endblock %}
