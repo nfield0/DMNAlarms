@@ -53,6 +53,14 @@ motion_time TIME,
 PRIMARY KEY(motion_id));
 
 
+/*Dummy Data*/
+
+
+
+
+
+/***********/
+
 /*Very basic queries that get all the data from each table*/
 SELECT * FROM fingerprint_table;
 SELECT * FROM face_table;
@@ -61,6 +69,14 @@ SELECT * FROM employee_acces_table;
 SELECT * FROM door_records_tables;
 SELECT * FROM motion;
 
-
+/*Trigger that splits the data into the seperate tables*/
+DROP TRIGGER IF EXISTS mutliadd;
+CREATE TRIGGER mutliadd
+AFTER INSERT ON employee_table
+FOR EACH ROW 
+BEGIN
+INSERT INTO fingerprint_table values(fingerprint_id, fingerprint_image);
+INSERT INTO face_table values(face_id, face_image);
+END
 
 
