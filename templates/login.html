@@ -2,11 +2,14 @@
 {% block body %}
 <div class="login-box">
   <div class="login-box-inner">
-    <form action="/login" method="post">
-      <input autocomplete="off" autofocus name="name" placeholder="Name" type="text">
-      <input autocomplete="off" autofocus name="name" placeholder="Password" type="text">
-      <input type="submit">
+    <form id="login-form" action="/login" method="post">
+      <input id="adm-box" autocomplete="off" autofocus name="name" placeholder="Admin Number" type="text">
+      <input id="pssw-box" autocomplete="off" autofocus name="name" placeholder="Password" type="text">
+      <input id="button-login" type="Login">
     </form>
+    <div class="help-button">
+
+    </div>
   </div>
 </div>
 
