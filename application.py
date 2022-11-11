@@ -1,10 +1,19 @@
 
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
+from flask_mysqldb import MySQL
+
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'dmntest'
+
+mysql = MySQL(app)
 
 Session(app)
 
@@ -15,14 +24,16 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        name = request.form.get("name")
-        session["name"] = name
-        return redirect("/")
-    #     Remember that user is logged in
-    #     Redirect to /
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO admin VALUES(%s,%s)''', (email, password))
+        mysql.connection.commit()
+        cursor.close()
+        return f"Done!!"
 
     return render_template("login.html")
 
