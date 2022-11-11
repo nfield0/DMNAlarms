@@ -1,7 +1,7 @@
-/*DROP DATABASE DMN_Alarms;*/
-CREATE DATABASE DMN_Alarms;
+/*DROP DATABASE DMN_Alarms;
+CREATE DATABASE DMN_Alarms;*/
 
-/*USE DATABASE DMN_Alarms;*/
+USE DATABASE DMN_Alarms;*/
 /*DROP TABLES IF EXISTS employee_table, employee_access_table, face_table, */
 
 CREATE TABLE fingerprint_table(
@@ -9,6 +9,11 @@ fingerprint_id INT NOT NULL AUTO_INCREMENT,
 fingerprint_image VARCHAR (255) NOT NULL,
 PRIMARY KEY(fingerprint_id));
 
+CREATE TABLE admin(
+    adminId INT NOT NULL AUTO_INCREMENT,
+    adminEmail VARCHAR(250) NOT NULL,
+    adminPassword VARCHAR(30) NOT NULL ,
+    PRIMARY KEY(adminId));
 
 /*WORKING TITLE IF YOUS HAVE A BETTER NAME PLEASE DONT HESITATE TO CHANGE IT :)*/
 CREATE TABLE face_table(
@@ -23,11 +28,10 @@ employee_id INT NOT NULL AUTO_INCREMENT,
 employee_firstname VARCHAR (20) NOT NULL,
 employee_surname VARCHAR (30) NOT NULL, 
 employee_email VARCHAR (50) NOT NULL,
-fingerprint_id INT NOT NULL,
-face_id INT NOT NULL,
-PRIMARY KEY(employee_id),
-FOREIGN KEY(fingerprint_id) REFERENCES fingerprint_table(fingerprint_id),
-FOREIGN KEY(face_id) REFERENCES face_table(face_id));
+fingerprint_test VARCHAR(200)NOT NULL, /*Change back to relational*/
+face_test VARCHAR(200) NOT NULL, /*Change back to relational*/
+PRIMARY KEY(employee_id));
+
 
 
 CREATE TABLE employee_access_table(
