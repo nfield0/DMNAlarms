@@ -6,16 +6,21 @@ CREATE DATABASE DMN_Alarms;
 
 CREATE TABLE fingerprint_table(
 fingerprint_id INT NOT NULL AUTO_INCREMENT,
-fingerprint_image VARCHAR (255) NOT NULL,
+fingerprint_image BLOB(255) NOT NULL,
 PRIMARY KEY(fingerprint_id));
 
 
 /*WORKING TITLE IF YOUS HAVE A BETTER NAME PLEASE DONT HESITATE TO CHANGE IT :)*/
 CREATE TABLE face_table(
 face_id INT NOT NULL AUTO_INCREMENT,
-face_image VARCHAR (255) NOT NULL,
+face_image BLOB(255) NOT NULL,
 PRIMARY KEY(fingerprint_id));
 
+CREATE TABLE admin(
+    adminId INT NOT NULL AUTO_INCREMENT,
+    adminEmail VARCHAR(250) NOT NULL,
+    adminPassword VARCHAR(30) NOT NULL ,
+    PRIMARY KEY(adminId));
 
 
 CREATE TABLE employee_table(
@@ -69,9 +74,9 @@ SELECT * FROM employee_acces_table;
 SELECT * FROM door_records_tables;
 SELECT * FROM motion;
 
-/*Trigger that splits the data into the seperate tables*/
-DROP TRIGGER IF EXISTS mutliadd;
-CREATE TRIGGER mutliadd
+/*Trigger that splits the data into the separate tables*/
+DROP TRIGGER IF EXISTS multiAdd;
+CREATE TRIGGER multiAdd
 AFTER INSERT ON employee_table
 FOR EACH ROW 
 BEGIN
