@@ -3,6 +3,7 @@
 
 import RPi.GPIO as GPIO
 import time, threading
+import socket
 
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
@@ -12,8 +13,11 @@ from pubnub.pubnub import PubNub
 PIR_pin = 23
 Buzzer_pin = 24
 
+lock_activator_pin = 25
+press_input_pin = 19
+
 myChannel = "dmn-channel"
-sensorList = ["buzzer"]
+sensorList = ["buzzer", "press"]
 data = {}
 
 pnconfig = PNConfiguration()
@@ -27,6 +31,8 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR_pin, GPIO.IN)
 GPIO.setup(Buzzer_pin, GPIO.OUT)
+GPIO.setup(lock_activator_pin, GPIO.OUT)
+GPIO.setup(press_input_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 def beep(repeat):
     for i in range(0, repeat):
@@ -55,17 +61,39 @@ def motionDetection():
         if data["alarm"]:
             beep(2)
 
+def press_detection():
+    data["press"] = False
+    print("inside press detection")
+    trigger = False
+    while True:
+        if(GPIO.input(press_input_pin)):
+            print("press detected!")
+            data["press"] = True
+            toggle_lock()
+            trigger = True
+            publish(myChannel, {"press": "Yes"})
+        else:
+            data["press"] = False
+            toggle_lock()
+            print("No press")
+            publish(myChannel, {"motion": "No"})
+        time.sleep(0.5)
+
+def toggle_lock():
+    if data["press"] == True:
+        GPIO.output(lock_activator_pin, 1)
+    else:
+        GPIO.output(lock_activator_pin, 0)
+
 
 def boot():
     print("Starting exterior pi")
 
 
-    motionDetection()
-
+    #motionDetection()
+    press_detection()
     #fingerprint_Sensing()
     #facial_Recognition()
-
-
 
 
 
