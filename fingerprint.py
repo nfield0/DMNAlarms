@@ -89,7 +89,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
         time_after = time.time()
 
     for i in range(len(g_rx_buf)):
-        g_rx_buf[i] = ord(g_rx_buf[i])
+        g_rx_buf[i] = ord(str(g_rx_buf[i]))
 
     if len(g_rx_buf) != rx_bytes_need:
         return ACK_TIMEOUT
@@ -133,7 +133,7 @@ def GetCompareLevel():
 def SetCompareLevel(level):
     global g_rx_buf
     command_buf = [CMD_COM_LEV, 0, level, 0, 0]
-    r = TxAndRxCmd(command_buf, 8, 0.1)
+    r = TxAndRxCmd(command_buf, level, 0.1)
 
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
@@ -232,7 +232,7 @@ def IsMasterUser(user_id):
 def VerifyUser():
     global g_rx_buf
     command_buf = [CMD_MATCH, 0, 0, 0, 0]
-    r = TxAndRxCmd(command_buf, 8, 5);
+    r = TxAndRxCmd(command_buf, 8, 5)
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
     if r == ACK_SUCCESS and IsMasterUser(g_rx_buf[4]) == TRUE:
