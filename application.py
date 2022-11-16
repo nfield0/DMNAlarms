@@ -21,13 +21,21 @@ Session(app)
 def index():
     if not session.get("email"):
         return redirect("/login")
-    return render_template("index.html")
+    cursor = mysql.connection.cursor()
+    cursor.execute(''' SELECT * FROM employee_table''')
+    employees = cursor.fetchall()
+    cursor.close()
+    print(employees)
+
+    return render_template("index.html", employees=employees)
+
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     msg=''
     if request.method == 'GET':
+
         return render_template("login.html")
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
         name = request.form.get("email")
@@ -74,6 +82,17 @@ def register():
         return redirect("/login")
     return render_template("registerAdmin.html")
 
+@app.route("/deleteEmployee", methods=["GET","POST"])
+def deleteEmployee():
+    if request.method == 'POST':
+        id = request.form.get("employee_id")
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' DELETE FROM employee_table WHERE employee_id = %s''', id)
+        mysql.connection.commit()
+        cursor.close()
+        return redirect("/")
+    return render_template("index.html")
+
 @app.route("/registerEmployee", methods=["GET","POST"])
 def registerEmployee():
     if request.method == 'POST':
@@ -90,46 +109,19 @@ def registerEmployee():
         return redirect("/")
     return render_template("index.html")
 
+@app.route("/viewEmployee", methods=["GET","POST"])
+def viewEmployee():
+    # if request.method == 'GET':
+    cursor = mysql.connection.cursor()
+    cursor.execute(''' SELECT * FROM employee_table''')
+    employees = cursor.fetchall()
+    cursor.close()
+    print(employees)
+
+    return render_template("index.html", employees=employees)
+@app.route("/addEmployees")
+def addEmployees():
+    return render_template("addEmployees.html")
+
 if __name__ == '__main__':
-    app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# from flask import Flask, render_template, request, redirect
-# import json
-#
-# app = Flask(__name__)
-#
-# alive = 0
-# data = {}
-#
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
-#
-# @app.route("/keep_alive")
-# def keep_alive():
-#     global alive, data
-#     alive += 1
-#     keep_alive_count = str(alive)
-#     data['keep_alive'] = keep_alive_count
-#     parsed_json = json.dumps(data)
-#     print(parsed_json)
-#     return str(parsed_json)
-#
-# app.run(port = 5000)
+    app.run(port = 5000)
