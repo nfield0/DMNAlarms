@@ -34,7 +34,7 @@ employee_firstname VARCHAR (20) NOT NULL,
 employee_surname VARCHAR (30) NOT NULL, 
 employee_email VARCHAR (50) NOT NULL,
 fingerprint_test VARCHAR(200)NOT NULL, /*Change back to relational*/
-face_test VARCHAR(200) NOT NULL, /*Change back to relational*/
+face_test BLOB NOT NULL, /*Change back to relational*/
 PRIMARY KEY(employee_id));
 
 

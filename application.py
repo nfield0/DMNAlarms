@@ -103,7 +103,7 @@ def registerEmployee():
         finger = request.form.get("finger")
 
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, face, finger))
+        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, finger, face))
         mysql.connection.commit()
         cursor.close()
         return redirect("/")
