@@ -1,3 +1,6 @@
+#!/usr/bin/env python3.5
+# -*- coding:utf-8 -*-
+
 import serial
 import time
 import threading
@@ -32,12 +35,12 @@ CMD_ADD_3 = 0x03
 CMD_MATCH = 0x0C
 CMD_DEL = 0x04
 CMD_DEL_ALL = 0x05
-CMD_USER_CNT = 0x09
-CMD_COM_LEV = 0x28
-CMD_LP_MODE = 0x2C
+CMD_USER_COUNT = 0x09
+CMD_SET_OR_QUERY_COMPARISON_LEVEL = 0x28
+CMD_SLEEP_MODE = 0x2C
 CMD_TIMEOUT = 0x2E
 
-CMD_FINGER_DETECTED = 0x14
+CMD_FINGER_DETECTED = 0x14 # NOT FOUND IN DOCUMENTATION
 
 Finger_WAKE_Pin = 23
 Finger_RST_Pin = 24
@@ -48,57 +51,74 @@ GPIO.setup(Finger_WAKE_Pin, GPIO.IN)
 GPIO.setup(Finger_RST_Pin, GPIO.OUT)
 GPIO.setup(Finger_RST_Pin, GPIO.OUT, initial=GPIO.HIGH)
 
-g_rx_buf = []
-PC_Command_RxBuf = []
+g_rx_buf = []   #RXD
+PC_Command_RxBuf = []   #Figure OUT
 Finger_SleepFlag = 0
 
-# rLock = threading.RLock()
-ser = serial.Serial("/dev/ttyS0", 19200)
+# rLock = threading.RLock()     Was here before i did anything
+ser = serial.Serial(port="/dev/ttyS0", baudrate=19200, parity=serial.PARITY_NONE,
+                    stopbits=serial.STOPBITS_ONE, write_timeout=None, timeout=None, bytesize=8)
+#Set up serial connection, cts and rts also available params
 
 
 # ***************************************************************************
 # @brief    send a command, and wait for the response of module
 # ***************************************************************************/
-def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
+def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 8, 0.1
     global g_rx_buf
     CheckSum = 0
     tx_buf = []
     tx = ""
 
-    tx_buf.append(CMD_HEAD)
+    tx_buf.append(CMD_HEAD) # [0xF5]
     for byte in command_buf:
         tx_buf.append(byte)
         CheckSum ^= byte
+                            #[0xF5, 0x28, 0, level, 0, 0]
 
-    tx_buf.append(CheckSum)
-    tx_buf.append(CMD_TAIL)
+    tx_buf.append(CheckSum) #[0xF5, 0x28, 0, level, 0, 0, CheckSum]
+    tx_buf.append(CMD_TAIL) #[0xF5, 0x28, 0, level, 0, 0, CheckSum, 0xF5]
 
     for i in tx_buf:
+        #print("before CHR()" + str(i))
+        #print("after CHR()" + str(chr(i))) # Definitely reading i in correctly
+        print("[" + str(i) + ", " + str(chr(i)) + "]")
         tx += chr(i)
+    print("type of tx", type(tx))
+    print("tx for serial ser: " + tx)
+    ser.reset_input_buffer()        # Old flushInput() is deprecated
+    print("tx encoded", str.encode(tx))
+    wrtn = ser.write(str.encode(tx))   # Encoded from unicode to utf-8
 
-    ser.flushInput()
-    ser.write(tx.encode())
+    print("Returned from write(): " + str(wrtn))
 
     g_rx_buf = []
     time_before = time.time()
     time_after = time.time()
     while time_after - time_before < timeout and len(g_rx_buf) < rx_bytes_need:  # Waiting for response
-        bytes_can_recv = ser.inWaiting()
+        bytes_can_recv = ser.in_waiting       #Old method deprecated
+        print("bytes_can_recv: " + str(ser.in_waiting))
         if bytes_can_recv != 0:
             g_rx_buf += ser.read(bytes_can_recv)
         time_after = time.time()
 
     for i in range(len(g_rx_buf)):
-        g_rx_buf[i] = ord(str(g_rx_buf[i]))
+        g_rx_buf[i] = ord(g_rx_buf[i])      #ord() gets the integer value of a unicode char
 
     if len(g_rx_buf) != rx_bytes_need:
+        print("RET 1")
+        print("Length of g_rx_buf: " + str(len(g_rx_buf)))
+        print(g_rx_buf)
         return ACK_TIMEOUT
     if g_rx_buf[0] != CMD_HEAD:
+        print("RET 2")
         return ACK_FAIL
     if g_rx_buf[rx_bytes_need - 1] != CMD_TAIL:
+        print("RET 3")
         return ACK_FAIL
     if g_rx_buf[1] != tx_buf[1]:
-        return ACK_FAIL
+        print("RET 4")
+        return ACK_FAIL                     #STOPPED HERE#################################
 
     CheckSum = 0
     for index, byte in enumerate(g_rx_buf):
@@ -106,9 +126,11 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
             continue
         if index == 6:
             if CheckSum != byte:
+                print("RET 5")
                 return ACK_FAIL
         CheckSum ^= byte
-    return ACK_SUCCESS;
+    print("RET 6")
+    return ACK_SUCCESS
 
 
 # ***************************************************************************
@@ -116,7 +138,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
 # ***************************************************************************/
 def GetCompareLevel():
     global g_rx_buf
-    command_buf = [CMD_COM_LEV, 0, 0, 1, 0]
+    command_buf = [CMD_SET_OR_QUERY_COMPARISON_LEVEL, 0, 0, 1, 0]
     r = TxAndRxCmd(command_buf, 8, 0.1)
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
@@ -127,13 +149,13 @@ def GetCompareLevel():
 
 
 # ***************************************************************************
-# @brief    Set Compare Level,the default value is 5,
+# @brief    Set Compare Level,the default value is 5, 
 #           can be set to 0-9, the bigger, the stricter
 # ***************************************************************************/
 def SetCompareLevel(level):
     global g_rx_buf
-    command_buf = [CMD_COM_LEV, 0, level, 0, 0]
-    r = TxAndRxCmd(command_buf, level, 0.1)
+    command_buf = [CMD_SET_OR_QUERY_COMPARISON_LEVEL, 0, level, 0, 0] # [0x28, 0, level, 0, 0]
+    r = TxAndRxCmd(command_buf, 8, 0.1)
 
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
@@ -148,7 +170,7 @@ def SetCompareLevel(level):
 # ***************************************************************************/
 def GetUserCount():
     global g_rx_buf
-    command_buf = [CMD_USER_CNT, 0, 0, 0, 0]
+    command_buf = [CMD_USER_COUNT, 0, 0, 0, 0]
     r = TxAndRxCmd(command_buf, 8, 0.1)
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
@@ -256,9 +278,6 @@ def Analysis_PC_Command(command):
     elif command == "CMD2" and Finger_SleepFlag != 1:
         print("Add fingerprint  (Put your finger on sensor until successfully/failed information returned) ")
         r = AddUser()
-        print("Result : ")
-        print(r)
-
         if r == ACK_SUCCESS:
             print("Fingerprint added successfully !")
         elif r == ACK_FAIL:
@@ -266,8 +285,6 @@ def Analysis_PC_Command(command):
                 "Failed: Please try to place the center of the fingerprint flat to sensor, or this fingerprint already exists !")
         elif r == ACK_FULL:
             print("Failed: The fingerprint library is full !")
-        else:
-            print("Fuck off")
     elif command == "CMD3" and Finger_SleepFlag != 1:
         print("Waiting Finger......Please try to place the center of the fingerprint flat to sensor !")
         r = VerifyUser()
@@ -332,13 +349,10 @@ def main():
     time.sleep(0.25)
     GPIO.output(Finger_RST_Pin, GPIO.HIGH)
     time.sleep(0.25)  # Wait for module to start
-    # while SetCompareLevel(5) != 5:
-    #     print(GetCompareLevel())
-    #     print(
-    #         "***ERROR***: Please ensure that the module power supply is 3.3V or 5V, the serial line connection is correct.")
-    #     time.sleep(1)
-    SetCompareLevel(4)
-    print(GetCompareLevel())
+    while SetCompareLevel(5) != 5:
+        print(
+            "***ERROR***: Please ensure that the module power supply is 3.3V or 5V, the serial line connection is correct.")
+        time.sleep(1)
     print("***************************** WaveShare Capacitive Fingerprint Reader Test *****************************")
     print("Compare Level:  5    (can be set to 0-9, the bigger, the stricter)")
     print("Number of fingerprints already available:  %d " % GetUserCount())
@@ -354,7 +368,7 @@ def main():
     print("***************************** WaveShare Capacitive Fingerprint Reader Test ***************************** ")
 
     t = threading.Thread(target=Auto_Verify_Finger)
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
     while True:
