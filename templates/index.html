@@ -26,8 +26,13 @@
             <td>{{ current[3] }}</td>
             <td>{{ current[4] }}</td>
             <td>{{ current[5] }}</td>
-            <td><a href="/">Edit</a></td>
-                <td>
+            <td>
+                <form id="edit-form" action="/editEmployee" method="post">
+                    <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
+                    <input autocomplete="off" autofocus type="submit" value="Edit">
+                </form>
+            </td>
+            <td>
                 <form id="delete-form" action="/deleteEmployee" method="post">
                     <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
                     <input autocomplete="off" autofocus type="submit" value="Delete">
