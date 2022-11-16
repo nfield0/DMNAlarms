@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if session.name %}
+    You are logged in as {{session.name}}
+    <a href="/logout">Log out</a>
+<div class="login-box">
+    <h1>Reigster an employee to use the door</h1>
+  <div class="login-box-inner">
+    <form id="register-form" action="/registerEmployee" method="post">
+      <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text">
+      <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text">
+        <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text">
+       <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="text">
+      <input id="finger-box" autocomplete="off" autofocus name="finger" placeholder="Upload image of your finger" type="text">
+
+
+
+      <input id="button-login" type="submit" value="Login">
+    </form>
+    <div class="help-button">
+<a href="/register">Dont have an account sign in</a>
+    </div>
+  </div>
+</div>
+{% else %}
+    You are not logged in.<a href="/login">Log in</a>
+{% endif %}
+
+
+
+
+
+
+<!--<html>-->
+<!--	<head>-->
+<!--		<title>Getting Sensors Online</title>-->
+<!--	</head>-->
+<!--	<body onload="keepAlive(); time(); setupPubNub();">-->
+<!--		<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.0.js"></script>-->
+<!--		<script src="static/js/main.js"></script>-->
+<!--		<h1> Online </h1>-->
+<!--		<h2>Connection: <span id="Connection_id">...</span></h2>-->
+<!--		<h2>Motion: <span id="motion_id">...</span></h2>-->
+<!--		<div>-->
+<!--			<input type="checkbox" id="buzzer" onclick="handleClick(this);"/>-->
+<!--			<label id="buzzer_on">Buzzer On</label>-->
+<!--		</div>-->
+<!--	</body>-->
+<!--</html>-->

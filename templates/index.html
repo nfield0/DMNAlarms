@@ -4,22 +4,23 @@
     You are logged in as {{session.name}}
     <a href="/logout">Log out</a>
 <div class="login-box">
-    <h1>Reigster an employee to use the door</h1>
-  <div class="login-box-inner">
-    <form id="register-form" action="/registerEmployee" method="post">
-      <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text">
-      <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text">
-        <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text">
-       <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="text">
-      <input id="finger-box" autocomplete="off" autofocus name="finger" placeholder="Upload image of your finger" type="text">
+    <h1>All Employees</h1>
+  <div class="employeesTable">
+      <table>
+          <thead>
 
-
-
-      <input id="button-login" type="submit" value="Login">
-    </form>
-    <div class="help-button">
-<a href="/register">Dont have an account sign in</a>
-    </div>
+          </thead>
+           <tbody>
+    {% for current in employees %}
+        <tr>
+            <td>{{ current[0] }}</td>
+            <td>{{ current[1] }}</td>
+            <td>{{ current[2] }}</td>
+            <td>{{ current[3] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+      </table>
   </div>
 </div>
 {% else %}
@@ -29,8 +30,6 @@
 
 
 {% endblock %}
-
-
 
 
 

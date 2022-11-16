@@ -90,46 +90,16 @@ def registerEmployee():
         return redirect("/")
     return render_template("index.html")
 
+@app.route("/viewEmployee", methods=["GET","POST"])
+def viewEmployee():
+
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' SELECT * FROM employee_table''')
+        mysql.connection.commit()
+        cursor.close()
+
+    return render_template("index")
+
 if __name__ == '__main__':
-    app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# from flask import Flask, render_template, request, redirect
-# import json
-#
-# app = Flask(__name__)
-#
-# alive = 0
-# data = {}
-#
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
-#
-# @app.route("/keep_alive")
-# def keep_alive():
-#     global alive, data
-#     alive += 1
-#     keep_alive_count = str(alive)
-#     data['keep_alive'] = keep_alive_count
-#     parsed_json = json.dumps(data)
-#     print(parsed_json)
-#     return str(parsed_json)
-#
-# app.run(port = 5000)
+    app.run(port = 5000)
