@@ -19,14 +19,13 @@
           </thead>
            <tbody>
             {% for current in employees %}
-
             <tr>
             <td>{{ current[0] }}</td>
             <td>{{ current[1] }}</td>
             <td>{{ current[2] }}</td>
             <td>{{ current[3] }}</td>
             <td>{{ current[4] }}</td>
-            <td><img src=""</td>
+            <td><img src="static/images/{{current[6]}}"/> </td>
             <td>
                 <form id="edit-form" action="/editEmployee" method="post">
                     <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
