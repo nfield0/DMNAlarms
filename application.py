@@ -1,7 +1,11 @@
-
+import os
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from flask_mysqldb import MySQL
+from werkzeug.utils import secure_filename
+from PIL import Image
+
+
 
 
 app = Flask(__name__)
@@ -13,9 +17,13 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'dmn_alarms'
 
+app.config['UPLOAD_FOLDER'] = '/images/uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'txt','pdf','png','jpg','jpeg','gif'}
+
 mysql = MySQL(app)
 
 Session(app)
+
 
 @app.route("/")
 def index():
@@ -99,11 +107,18 @@ def registerEmployee():
         firstname = request.form.get("firstname")
         surname = request.form.get("surname")
         email = request.form.get("email")
-        face = request.form.get("face")
         finger = request.form.get("finger")
 
+        face = request.files.get("face")
+        if not face:
+             return 'No Image Uploaded', 400
+        else:
+            filename = secure_filename(face.filename)
+            face.save("images/" + filename)
+
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, finger, face))
+        empPicture = convertToBinaryData(face.filename)
+        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, finger, empPicture))
         mysql.connection.commit()
         cursor.close()
         return redirect("/")
@@ -116,12 +131,57 @@ def viewEmployee():
     cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
     cursor.close()
+    for row in employees:
+        image = row[5]
+        write_file(image,)
     print(employees)
 
     return render_template("index.html", employees=employees)
 @app.route("/addEmployees")
 def addEmployees():
     return render_template("addEmployees.html")
+
+
+def convertToBinaryData(filename):
+    # Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData
+
+def write_file(data, filename):
+    # Convert binary data to proper format and write it on Hard Disk
+    with open(filename, 'wb') as file:
+        file.write(data)
+
+@app.route("/editEmployee", methods=["GET","POST"])
+def editEmployee():
+    if request.method == 'POST':
+        cursor = mysql.connection.cursor()
+        emp_id = request.form.get("employee_id")
+        print(emp_id)
+        cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
+
+
+        employee = cursor.fetchone()
+        cursor.close()
+        return render_template("editEmployees.html", employee=employee)
+
+    if request.method == 'POST':
+        cursor = mysql.connection.cursor()
+        emp_id = request.form("employee_id")
+        firstname = request.form("firstname")
+        secondname = request.form("surname")
+        email = request.form("email")
+        fingerprint = request.form("fingerprint")
+        face = request.form("face")
+
+        print(emp_id)
+        cursor.execute(''' UPDATE employee_table set employee_firstname  = %s, employee_surname = %s, email =%s, fingerprint=%s, face = %s WHERE employee_id = %s ''',(emp_id, firstname, secondname, email, fingerprint, face))
+        mysql.connection.commit()
+        cursor.close()
+
+
+        return render_template("index.html")
 
 if __name__ == '__main__':
     app.run(port = 5000)
