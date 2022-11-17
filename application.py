@@ -34,11 +34,13 @@ def index():
     cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
     cursor.close()
-    #encoded = []
-    # for row in employees:
-    #     image = row[5]
-    #     encoded.append(base64.b64encode(image))
-    # print(encoded[0])
+
+    encoded = []
+    for row in employees:
+        write_file(row[5], "static/images/" + row[6])
+        # image = row[5]
+        # encoded.append(base64.b64encode(image))
+
     return render_template("index.html", employees=employees)
 
 
