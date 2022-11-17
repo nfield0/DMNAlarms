@@ -26,11 +26,13 @@ employee_id INT NOT NULL AUTO_INCREMENT,
 employee_firstname VARCHAR (20) NOT NULL,
 employee_surname VARCHAR (30) NOT NULL, 
 employee_email VARCHAR (50) NOT NULL,
-fingerprint_test VARCHAR(200)NOT NULL, /*Change back to relational*/
 face_test BLOB NOT NULL, /*Change back to relational*/
 img_filename varchar(50) NOT NULL, /*Change back to relational*/
 PRIMARY KEY(employee_id));
 
+/*Only needed if you havent dropped it yet hence wht it is commented out*/
+/*ALTER TABLE employee_table
+DROP fingerprint_test;*/
 
 
 CREATE TABLE employee_access_table(

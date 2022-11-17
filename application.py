@@ -37,7 +37,7 @@ def index():
 
     encoded = []
     for row in employees:
-        write_file(row[5], "static/images/" + row[6])
+        write_file(row[4], "static/images/" + row[5])
         # image = row[5]
         # encoded.append(base64.b64encode(image))
 
@@ -113,7 +113,7 @@ def registerEmployee():
         firstname = request.form.get("firstname")
         surname = request.form.get("surname")
         email = request.form.get("email")
-        finger = request.form.get("finger")
+        finger = "finger"
 
         face = request.files.get("face")
         if not face:
@@ -125,7 +125,7 @@ def registerEmployee():
         cursor = mysql.connection.cursor()
         empPicture = convertToBinaryData("static/images/" + face.filename)
         img_filename = face.filename
-        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s,%s)''', (firstname, surname, email, finger, empPicture,img_filename))
+        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, empPicture,img_filename))
         mysql.connection.commit()
         cursor.close()
         return redirect("/")
