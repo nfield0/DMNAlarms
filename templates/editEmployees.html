@@ -6,7 +6,7 @@
 <div class="login-box">
     <h1>Edit Employee {{employee[0]}}</h1>
   <div class="login-box-inner">
-    <form id="edit-form" action="/editEmployee" method="post">
+    <form id="edit-form" action="/editEmployeeData/{{employee[0]}}" method="post">
       <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden" value="{{employee[0]}}">
       <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text" value="{{employee[1]}}">
       <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text" value="{{employee[2]}}">

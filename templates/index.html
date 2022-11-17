@@ -28,7 +28,7 @@
             <td>{{ current[4] }}</td>
             <td><img src="static/images/{{current[6]}}" height="50px"/> </td>
             <td>
-                <form id="edit-form" action="/editEmployee" method="post">
+                <form id="edit-form" action="/viewEditEmployee/{{current[0]}}" method="post">
                     <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
                     <input autocomplete="off" autofocus type="submit" value="Edit">
                 </form>

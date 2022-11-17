@@ -21,13 +21,6 @@ face_id INT NOT NULL AUTO_INCREMENT,
 face_image BLOB(255) NOT NULL,
 PRIMARY KEY(fingerprint_id));
 
-CREATE TABLE admin(
-    adminId INT NOT NULL AUTO_INCREMENT,
-    adminEmail VARCHAR(250) NOT NULL,
-    adminPassword VARCHAR(30) NOT NULL ,
-    PRIMARY KEY(adminId));
-
-
 CREATE TABLE employee_table(
 employee_id INT NOT NULL AUTO_INCREMENT,
 employee_firstname VARCHAR (20) NOT NULL,

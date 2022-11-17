@@ -163,36 +163,35 @@ def write_file(data, filename):
     # Convert binary data to proper format and write it on Hard Disk
     with open(filename, 'wb') as file:
         file.write(data)
-
-@app.route("/editEmployee", methods=["GET","POST"])
-def editEmployee():
+@app.route("/editEmployeeData/<int:employee_id>", methods=["GET","POST", "PUT"])
+def editEmployeeData(employee_id):
     if request.method == 'POST':
-        cursor = mysql.connection.cursor()
+        print("hreer bitch")
+        c = mysql.connection.cursor()
         emp_id = request.form.get("employee_id")
+        firstname = request.form.get("firstname")
+        secondname = request.form.get("surname")
+        email = request.form.get("email")
+        fingerprint = request.form.get("fingerprint")
+        face = request.form.get("face")
+
         print(emp_id)
+        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, fingerprint_test=%s, face_test = %s WHERE employee_id = %s''',(emp_id, firstname, secondname, email, fingerprint, face, emp_id))
+        print(firstname)
+        mysql.connection.commit()
+        c.close()
+
+        return redirect("/")
+@app.route("/viewEditEmployee/<int:employee_id>", methods=["GET","POST", "PUT"])
+def viewEditEmployee(employee_id):
+    if request.method == 'POST':
+        emp_id = employee_id
+        cursor = mysql.connection.cursor()
         cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
-
-
         employee = cursor.fetchone()
         cursor.close()
-        return render_template("editEmployees.html", employee=employee)
 
-    if request.method == 'POST':
-        cursor = mysql.connection.cursor()
-        emp_id = request.form("employee_id")
-        firstname = request.form("firstname")
-        secondname = request.form("surname")
-        email = request.form("email")
-        fingerprint = request.form("fingerprint")
-        face = request.form("face")
-
-        print(emp_id)
-        cursor.execute(''' UPDATE employee_table set employee_firstname  = %s, employee_surname = %s, email =%s, fingerprint=%s, face = %s WHERE employee_id = %s ''',(emp_id, firstname, secondname, email, fingerprint, face))
-        mysql.connection.commit()
-        cursor.close()
-
-
-        return render_template("index.html")
+    return render_template("editEmployees.html", employee=employee)
 
 if __name__ == '__main__':
     app.run(port = 5000)
