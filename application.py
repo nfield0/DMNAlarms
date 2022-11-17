@@ -172,11 +172,10 @@ def editEmployeeData(employee_id):
         firstname = request.form.get("firstname")
         secondname = request.form.get("surname")
         email = request.form.get("email")
-        fingerprint = request.form.get("fingerprint")
         face = request.form.get("face")
 
         print(emp_id)
-        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, fingerprint_test=%s, face_test = %s WHERE employee_id = %s''',(emp_id, firstname, secondname, email, fingerprint, face, emp_id))
+        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test = %s WHERE employee_id = %s''',(emp_id, firstname, secondname, email,  face, emp_id))
         print(firstname)
         mysql.connection.commit()
         c.close()
