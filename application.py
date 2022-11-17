@@ -131,13 +131,13 @@ def registerEmployee():
         return redirect("/")
     return render_template("index.html")
 
-@app.route("/viewEmployee", methods=["GET","POST"])
-def viewEmployee():
-    # if request.method == 'GET':
-    # cursor = mysql.connection.cursor()
-    # cursor.execute(''' SELECT * FROM employee_table''')
-    # employees = cursor.fetchall()
-    # cursor.close()
+@app.route("/viewEmployee/<int:employee_id>")
+def viewOneEmployee(employee_id):
+    emp_id = employee_id
+    cursor = mysql.connection.cursor()
+    cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
+    employee = cursor.fetchone()
+    cursor.close()
     # encoded=[]
     # for row in employees:
     #     image = row[5]
@@ -147,7 +147,7 @@ def viewEmployee():
     # print(encoded)
     # print("hereeeeeeeeeee")
 
-    return render_template("index.html", employees=employees,images=encoded)
+    return render_template("viewOneEmployee.html", employee=employee)
 @app.route("/addEmployees")
 def addEmployees():
     return render_template("addEmployees.html")

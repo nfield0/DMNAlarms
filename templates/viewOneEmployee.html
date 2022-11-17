@@ -4,7 +4,7 @@
     You are logged in as {{session.name}}
     <a href="/logout">Log out</a>
 <div class="login-box">
-    <h1>All Employees</h1>
+    <h1>Employee {{employee[1]}}, {{employee[2]}}</h1>
   <div class="employeesTable">
       <table>
           <thead>
@@ -20,7 +20,6 @@
            <tbody>
             {% for current in employees %}
             <tr>
-            <td><a href="/viewEmployee/{{current[0]}}">View Employee Details</a></td>
             <td>{{ current[0] }}</td>
             <td>{{ current[1] }}</td>
             <td>{{ current[2] }}</td>
