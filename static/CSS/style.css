@@ -130,6 +130,19 @@ body {
 
 }
 
+.employeesTable h1 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    color: #DA1919;
+    font-weight: 500;
+    margin: 25px;
+}
+
+.emNewButton {
+    position: absolute;
+    right: 25px;
+    top: 40px;
+}
+
 .emTable {
     width: 950px;
     height: 500px;
@@ -144,14 +157,15 @@ body {
     height: 70px;
     width: 100%;
     border-radius: 5px;
-    background-color: violet;
+    background-color: #424242;
     margin-top: 10px;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .emLink {
-    height: 60px;
-    width: 90%;
+    height: 70px;
+    width: 100%;
     position: absolute;
 }
 
@@ -162,32 +176,36 @@ body {
     z-index: 1;
 }
 
+.emText {
+    height: 25px;
+    left: 10%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-0%, -50%);
+}
+
 .emID {
-    width: 50px;
     height: auto;
     display: inline-block;
     font-size: 20px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    margin-left: 20px;
 }
 
-.emFName {
-    width: 50px;
+.emName {
     height: auto;
     display: inline-block;
     font-size: 20px;
-}
-
-.emSName {
-    width: 50px;
-    height: auto;
-    display: inline-block;
-    font-size: 20px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    margin-left: 20px;
 }
 
 .emEmail {
-    width: 50px;
     height: auto;
     display: inline-block;
     font-size: 20px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    margin-left: 20px;
 }
 
 .emImage {
@@ -200,7 +218,15 @@ body {
 .emImage img {
     height: 50px;
     width: 50px;
-    border-radius: 10px;
+    border-radius: 5px;
+}
+
+.emButtons {
+    height: 25px;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
 }
 
 .emEditButton {
@@ -215,6 +241,13 @@ body {
     display: inline-block;
 }
 
-.emNewButton {
+.logout-box {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    color: white;
+}
+
+.logout-box {
 
 }
