@@ -24,6 +24,7 @@ header {
     position: relative;
     display: block;
     background-color: #212121;
+    box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
 }
 
 .header .header-inner {
@@ -112,3 +113,108 @@ body {
     background-color: red;
 }
 
+/* Employee Box */
+.em-box {
+    width: 1000px;
+    height: 600px;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: #212121;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.employeesTable {
+
+}
+
+.emTable {
+    width: 950px;
+    height: 500px;
+    margin: auto;
+}
+
+.emTableBody {
+
+}
+
+.emTableRow {
+    height: 70px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: violet;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.emLink {
+    height: 60px;
+    width: 90%;
+    position: absolute;
+}
+
+.emLink a {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+.emID {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.emFName {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.emSName {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.emEmail {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.emImage {
+    margin: 10px;
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
+.emImage img {
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+}
+
+.emEditButton {
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
+.emDeleteButton {
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
+.emNewButton {
+
+}
