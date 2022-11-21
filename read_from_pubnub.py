@@ -30,6 +30,7 @@ pubnub.subscribe()\
   .channels(myChannel)\
   .execute()
 
+
 class SubscribeHandler(SubscribeCallback):
     def message(self, pubnub, message):
         print("Message payload: %s" % message.message)

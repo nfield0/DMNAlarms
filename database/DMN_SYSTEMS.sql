@@ -30,6 +30,7 @@ face_test BLOB NOT NULL, /*Change back to relational*/
 img_filename varchar(50) NOT NULL, /*Change back to relational*/
 PRIMARY KEY(employee_id));
 
+
 /*Only needed if you havent dropped it yet hence wht it is commented out*/
 /*ALTER TABLE employee_table
 DROP fingerprint_test;*/

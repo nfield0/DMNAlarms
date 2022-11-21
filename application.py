@@ -23,7 +23,6 @@ app.config['UPLOAD_FOLDER'] = 'static/images/'
 app.config['ALLOWED_EXTENSIONS'] = {'txt','pdf','png','jpg','jpeg','gif'}
 
 
-
 mysql = MySQL(app)
 
 Session(app)
