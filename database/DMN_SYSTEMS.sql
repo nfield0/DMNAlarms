@@ -34,6 +34,10 @@ PRIMARY KEY(employee_id));
 /*ALTER TABLE employee_table
 DROP fingerprint_test;*/
 
+ALTER TABLE employee_table
+ADD fingerprint INT NOT NULL;
+
+UPDATE employee_table SET fingerprint = 10 WHERE employee_id = 5;
 
 CREATE TABLE employee_access_table(
 access_id INT NOT NULL AUTO_INCREMENT,
