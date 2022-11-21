@@ -7,6 +7,22 @@ import threading
 import sys
 import RPi.GPIO as GPIO
 
+from pubnub.callbacks import SubscribeCallback
+from pubnub.enums import PNStatusCategory, PNOperationType
+from pubnub.pnconfiguration import PNConfiguration
+from pubnub.pubnub import PubNub
+
+myChannel = "dmn-channel"
+sensorList = ["finger_scanner, finger_scanner_new"]
+data = {}
+
+pnconfig = PNConfiguration()
+
+pnconfig.subscribe_key = 'sub-c-5efa4cb5-6f01-42ea-a6ac-98b3dccd764a'
+pnconfig.publish_key = 'pub-c-6df66f48-e71d-41ea-a2a7-d696bda5a561'
+pnconfig.uuid = 'exterior-pi'
+pubnub = PubNub(pnconfig)
+
 TRUE = 1
 FALSE = 0
 
@@ -52,29 +68,35 @@ GPIO.setup(Finger_RST_Pin, GPIO.OUT)
 GPIO.setup(Finger_RST_Pin, GPIO.OUT)
 GPIO.output(Finger_RST_Pin, GPIO.HIGH)
 
-g_rx_buf = []
-PC_Command_RxBuf = []
+g_rx_buf = []   #RXD
+latest_scanned_id = 0
+PC_Command_RxBuf = []   #Figure OUT
 Finger_SleepFlag = 0
 
 # rLock = threading.RLock()     Was here before i did anything
 ser = serial.Serial(port="/dev/ttyS0", baudrate=19200, parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE, write_timeout=None, timeout=None, bytesize=8)
+#Set up serial connection, cts and rts also available params
+
 
 # ***************************************************************************
 # @brief    send a command, and wait for the response of module
 # ***************************************************************************/
 
-def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
+def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 8, 0.1
     global g_rx_buf
     CheckSum = 0
     tx_buf = []
     tx = b''
 
-    tx_buf.append(CMD_HEAD)
+    print("COMMAND BUFFER: ", command_buf)
+
+    tx_buf.append(CMD_HEAD) # [0xF5]
     for int_val in command_buf:
         tx_buf.append(int_val)
         CheckSum ^= int_val
 
+    print("CHECKSUM: ", CheckSum)
     tx_buf.append(CheckSum)
     tx_buf.append(CMD_TAIL)
 
@@ -84,7 +106,13 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
 
     ser.reset_input_buffer()        # Old flushInput() is deprecated
 
+    print("TYPE OF TX NOW!!!: ",type(tx))
+    print("TX NOW: ", tx)
+
+    print("Byte String TX: : ", tx)
     wrtn = ser.write(tx)
+
+    print("Returned from write(): " + str(wrtn))
 
     g_rx_buf = []
     time_before = time.time()
@@ -96,13 +124,22 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
         time_after = time.time()
 
     if len(g_rx_buf) != rx_bytes_need:
+        print("RET 1")
+        print("Length of g_rx_buf: " + str(len(g_rx_buf)))
+        print(g_rx_buf)
         return ACK_TIMEOUT
     if g_rx_buf[0] != CMD_HEAD:
+        print(g_rx_buf[0])
+        print("RET 2")
         return ACK_FAIL
     if g_rx_buf[rx_bytes_need - 1] != CMD_TAIL:
+        print("RET 3")
         return ACK_FAIL
     if g_rx_buf[1] != tx_buf[1]:
-        return ACK_FAIL
+        print(g_rx_buf[1])
+        print(tx_buf[1])
+        print("RET 4")
+        return ACK_FAIL                     #STOPPED HERE#################################
 
     CheckSum = 0
     for index, byte in enumerate(g_rx_buf):
@@ -110,8 +147,10 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout):
             continue
         if index == 6:
             if CheckSum != byte:
+                print("RET 5")
                 return ACK_FAIL
         CheckSum ^= byte
+    print("RET 6")
     return ACK_SUCCESS
 
 # ***************************************************************************
@@ -121,6 +160,8 @@ def GetCompareLevel():
     global g_rx_buf
     command_buf = [CMD_SET_OR_QUERY_COMPARISON_LEVEL, 0, 0, 1, 0]
     r = TxAndRxCmd(command_buf, 8, 0.1)
+    print(g_rx_buf)
+    print("*******************************************")
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
     if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
@@ -176,13 +217,17 @@ def AddUser():
         return ACK_FULL
 
     command_buf = [CMD_ADD_1, 0, r + 1, 3, 0]
-    print(g_rx_buf)
     r = TxAndRxCmd(command_buf, 8, 6)
+    print(g_rx_buf)
+    print("****************************")
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
     if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
         command_buf[0] = CMD_ADD_3
         r = TxAndRxCmd(command_buf, 8, 6)
+        latest_scanned_id = g_rx_buf[3]
+        nvar = r+1
+        publish(myChannel, {"finger_scanner_new": GetUserCount()})
         print(g_rx_buf)
         if r == ACK_TIMEOUT:
             return ACK_TIMEOUT
@@ -223,11 +268,16 @@ def IsMasterUser(user_id):
 # ***************************************************************************/
 def VerifyUser():
     global g_rx_buf
+    global latest_scanned_id
     command_buf = [CMD_MATCH, 0, 0, 0, 0]
     r = TxAndRxCmd(command_buf, 8, 5)
+    print(g_rx_buf)
+    print("****************************")
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
     if r == ACK_SUCCESS and IsMasterUser(g_rx_buf[4]) == TRUE:
+        latest_scanned_id = g_rx_buf[3]
+        publish(myChannel, {"finger_scanner": latest_scanned_id})
         return ACK_SUCCESS
     elif g_rx_buf[4] == ACK_NO_USER:
         return ACK_NO_USER
@@ -299,6 +349,7 @@ def Auto_Verify_Finger():
                     r = VerifyUser()
                     if r == ACK_SUCCESS:
                         print("Matching successful !")
+                        break
                     elif r == ACK_NO_USER:
                         print("Failed: This fingerprint was not found in the library !")
                     elif r == ACK_TIMEOUT:
@@ -342,13 +393,79 @@ def main():
     t.daemon = True
     t.start()
 
+    global latest_scanned_id
+
     while True:
+        print("Latest Scanned ID: ", latest_scanned_id)
         str = input("Please input command (CMD1-CMD6):")
         Analysis_PC_Command(str)
+
+#pubnub
+def publish(custom_channel, msg):
+    pubnub.publish().channel(custom_channel).message(msg).pn_async(my_publish_callback)
+
+def my_publish_callback(envelope, status):
+    # Check whether request successfully completed or not
+    if not status.is_error():
+        pass  # Message successfully published to specified channel.
+    else:
+        pass  # Handle message publish error. Check 'category' property to find out possible issue
+        # because of which request did fail.
+        # Request can be resent using: [status retry];
+
+
+class MySubscribeCallback(SubscribeCallback):
+    def presence(self, pubnub, presence):
+        pass  # handle incoming presence data
+
+    def status(self, pubnub, status):
+        if status.category == PNStatusCategory.PNUnexpectedDisconnectCategory:
+            pass  # This event happens when radio / connectivity is lost
+
+        elif status.category == PNStatusCategory.PNConnectedCategory:
+            # Connect event. You can do stuff like publish, and know you'll get it.
+            # Or just use the connected event to confirm you are subscribed for
+            # UI / internal notifications, etc
+            pubnub.publish().channel(myChannel).message('Connected to PubNub').pn_async(my_publish_callback)
+        elif status.category == PNStatusCategory.PNReconnectedCategory:
+            pass
+            # Happens as part of our regular operation. This event happens when
+            # radio / connectivity is lost, then regained.
+        elif status.category == PNStatusCategory.PNDecryptionErrorCategory:
+            pass
+            # Handle message decryption error. Probably client configured to
+            # encrypt messages and on live data feed it received plain text.
+
+    def message(self, pubnub, message):
+        # Handle new message stored in message.message
+        try:
+            print(message.message)
+            msg = message.message
+            key = list(msg.keys())
+            if key[0] == "event":       #{"event" : {"sensor_name" : True}}
+                self.handleEvent(msg)
+        except Exception as e:
+            print("Received: ", message.message)
+            print(e)
+            pass
+
+
+    def handleEvent(self, msg):
+        global data
+        eventData = msg["event"]
+        key = list(eventData.keys())
+        if key[0] in sensorList:
+            if eventData[key[0]] is True:
+                data["alarm"] = True
+            elif eventData[key[0]] is False:
+                data["alarm"] = False
+
 
 if __name__ == '__main__':
     try:
         main()
+        pubnub.add_listener(main())
+        pubnub.subscribe().channels(myChannel).execute()
     except KeyboardInterrupt:
         if ser != None:
             ser.close()
