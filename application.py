@@ -1,30 +1,32 @@
-import os
-import base64
+
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
-from PIL import Image
-
-
-
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'super_secret_key'
+app.config["SESSION_FILE_DIR"] = 'var/www/FlaskApp/FlaskApp/FlaskSession'
+
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = "superSecret"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
+#app.config['MYSQL_PASSWORD'] = 'Password1#'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'dmn_alarms'
 
-app.config['UPLOAD_FOLDER'] = '/images'
+#app.config['UPLOAD_FOLDER'] = 'var/www/FlaskApp/FlaskApp/static/images/'
+app.config['UPLOAD_FOLDER'] = 'static/images/'
 app.config['ALLOWED_EXTENSIONS'] = {'txt','pdf','png','jpg','jpeg','gif'}
+
+
 
 mysql = MySQL(app)
 
 Session(app)
-
 
 @app.route("/")
 def index():
@@ -33,15 +35,18 @@ def index():
     cursor = mysql.connection.cursor()
     cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
+
+    cursor.execute(''' SELECT * FROM log''')
+    employees = cursor.fetchall()
     cursor.close()
 
     encoded = []
     for row in employees:
-        write_file(row[4], "static/images/" + row[5])
+        write_file(row[4], app.config['UPLOAD_FOLDER'] + row[5])
         # image = row[5]
         # encoded.append(base64.b64encode(image))
 
-    return render_template("index.html", employees=employees)
+    return render_template("index.html", employees=employees, log=log)
 
 
 
@@ -120,10 +125,10 @@ def registerEmployee():
              return 'No Image Uploaded', 400
         else:
             filename = secure_filename(face.filename)
-            face.save("static/images/" + filename)
+            face.save(app.config['UPLOAD_FOLDER'] + filename)
 
         cursor = mysql.connection.cursor()
-        empPicture = convertToBinaryData("static/images/" + face.filename)
+        empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
         img_filename = face.filename
         cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, empPicture,img_filename))
         mysql.connection.commit()
@@ -139,13 +144,6 @@ def viewOneEmployee(employee_id):
     employee = cursor.fetchone()
     cursor.close()
     # encoded=[]
-    # for row in employees:
-    #     image = row[5]
-    #     encoded.append(base64.b64encode(image))
-    # # print(employees)
-    # print("hereeeeeeeeeee")
-    # print(encoded)
-    # print("hereeeeeeeeeee")
 
     return render_template("viewOneEmployee.html", employee=employee)
 @app.route("/addEmployees")

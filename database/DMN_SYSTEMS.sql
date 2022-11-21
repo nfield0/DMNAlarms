@@ -1,7 +1,7 @@
-/*DROP DATABASE DMN_Alarms;
-CREATE DATABASE DMN_Alarms;*/
+DROP DATABASE IF EXISTS DMN_Alarms;
+CREATE DATABASE DMN_Alarms;
 
-USE DATABASE DMN_Alarms;*/
+USE DMN_Alarms;
 /*DROP TABLES IF EXISTS employee_table, employee_access_table, face_table, */
 
 CREATE TABLE fingerprint_table(
