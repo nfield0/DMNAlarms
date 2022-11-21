@@ -23,6 +23,7 @@ app.config['UPLOAD_FOLDER'] = 'static/images/'
 app.config['ALLOWED_EXTENSIONS'] = {'txt','pdf','png','jpg','jpeg','gif'}
 
 
+
 mysql = MySQL(app)
 
 Session(app)
@@ -35,8 +36,8 @@ def index():
     cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
 
-    cursor.execute(''' SELECT * FROM log''')
-    employees = cursor.fetchall()
+    cursor.execute(''' SELECT * FROM employee_access_table''')
+    log = cursor.fetchall()
     cursor.close()
 
     encoded = []
@@ -163,7 +164,6 @@ def write_file(data, filename):
 @app.route("/editEmployeeData/<int:employee_id>", methods=["GET","POST", "PUT"])
 def editEmployeeData(employee_id):
     if request.method == 'POST':
-        print("hreer bitch")
         c = mysql.connection.cursor()
         emp_id = request.form.get("employee_id")
         firstname = request.form.get("firstname")
