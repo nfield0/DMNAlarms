@@ -11,7 +11,23 @@
     <div class="header">
         <div class="header-inner">
             <div class="header-logo">
-                <img src="static/images/DMN-Logo1.png"/>
+                {% if session.name %}
+                    <a href="/"><img src="../static/images/DMN-Logo1.png"/></a>
+                {% else %}
+
+                {% endif %}
+            </div>
+            <div class="header-login">
+                {% if session.name %}
+                <div class="logout-box">
+                    <h3>You are logged in as {{session.name}}</h3>
+                    <a href="/logout"><h3>Log out</h3></a>
+                </div>
+                {% else %}
+                <div class="logout-box">
+                    <h3>You are not logged in.</h3><a href="/login"><h3>Log in</h3></a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
