@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if session.name %}
+<div class="logout-box">
     You are logged in as {{session.name}}
     <a href="/logout">Log out</a>
+</div>
 <div class="login-box">
     <h1>Reigster an employee to use the door</h1>
   <div class="login-box-inner">

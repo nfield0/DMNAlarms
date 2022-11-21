@@ -5,6 +5,11 @@ import RPi.GPIO as GPIO
 import time, threading
 import socket
 
+#camera imports
+# from picamera import PiCamera
+import pygame.camera
+
+#pubnub imports
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
 from pubnub.pnconfiguration import PNConfiguration
@@ -90,10 +95,11 @@ def boot():
     print("Starting exterior pi")
 
 
+#start thread for each of these
     #motionDetection()
-    press_detection()
+    #press_detection()
     #fingerprint_Sensing()
-    #facial_Recognition()
+    facial_Recognition()
 
 
 
@@ -108,6 +114,7 @@ def facial_Recognition():
     print("Facial recognition started")
 
 
+# initialize the camera
 
 
 
