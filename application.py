@@ -61,15 +61,12 @@ class SubscribeHandler(SubscribeCallback):
 
         with app.app_context():
             cur = mysql.connection.cursor()
-            cur.execute(''' SELECT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time
-FROM employee_access_table ac, employee_table emp
-INNER JOIN employee_table ON employee_access_table.employee_id = employee_table.employee_id''')
+            cur.execute(''' SELECT * FROM employee_table where employee_id == message.message['finger_scanner']''')
             account = cur.fetchone()
-
             currentDay = today()
             currentTime = datetime.now().time()
             print(message.message['finger_scanner'])
-            cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 1))
+            cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 6))
             mysql.connection.commit()
             cur.close()
 
@@ -83,7 +80,10 @@ def index():
     cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
 
-    cursor.execute(''' SELECT * FROM employee_access_table''')
+    cursor.execute(''' SELECT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time
+    FROM employee_access_table ac, employee_table emp
+    INNER JOIN employee_table ON employee_table.employee_id = employee_table.employee_id''')
+
     log = cursor.fetchall()
     cursor.close()
 
@@ -165,7 +165,7 @@ def registerEmployee():
         firstname = request.form.get("firstname")
         surname = request.form.get("surname")
         email = request.form.get("email")
-        finger = "finger"
+        finger = 7
 
         face = request.files.get("face")
         if not face:
@@ -177,7 +177,7 @@ def registerEmployee():
         cursor = mysql.connection.cursor()
         empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
         img_filename = face.filename
-        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''', (firstname, surname, email, empPicture,img_filename))
+        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s,%s)''', (firstname, surname, email, empPicture,img_filename,finger))
         mysql.connection.commit()
         cursor.close()
         return redirect("/")
@@ -217,9 +217,10 @@ def editEmployeeData(employee_id):
         secondname = request.form.get("surname")
         email = request.form.get("email")
         face = request.form.get("face")
+        finger = 7
 
         print(emp_id)
-        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test = %s WHERE employee_id = %s''',(emp_id, firstname, secondname, email,  face, emp_id))
+        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test =%s WHERE employee_id = %s''',(emp_id, firstname, secondname, email,  face, emp_id))
         print(firstname)
         mysql.connection.commit()
         c.close()
