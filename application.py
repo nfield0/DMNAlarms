@@ -61,13 +61,15 @@ class SubscribeHandler(SubscribeCallback):
 
         with app.app_context():
             cur = mysql.connection.cursor()
-            cur.execute(''' SELECT * FROM employee_table where employee_id == message.message['finger_scanner']''')
+            cur.execute(''' SELECT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time
+FROM employee_access_table ac, employee_table emp
+INNER JOIN employee_table ON employee_access_table.employee_id = employee_table.employee_id''')
             account = cur.fetchone()
 
             currentDay = today()
             currentTime = datetime.now().time()
             print(message.message['finger_scanner'])
-            cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, account[0]))
+            cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 1))
             mysql.connection.commit()
             cur.close()
 
