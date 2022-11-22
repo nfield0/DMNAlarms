@@ -106,10 +106,8 @@ body {
 .login-box-inner {
     width: 350px;
     height: 200px;
-    left: 50%;
-    top: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
+    margin: auto;
+    position: relative;
 }
 
 #login-form {
@@ -154,10 +152,18 @@ body {
 #button-login {
     float: left;
     height: 30px;
-    width: 100px;
+    width: auto;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
     border-radius: 5px;
     border: none;
     background-color: red;
+}
+
+.main-wrapper {
+    width: 75%;
+    margin: auto;
 }
 
 /* Employee Box */
@@ -187,7 +193,14 @@ body {
 .emNewButton {
     position: absolute;
     right: 25px;
-    top: 40px;
+    top: 15px;
+}
+
+.emNewButton h2 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    font-size: 15px;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .emTable {
@@ -329,6 +342,74 @@ body {
     font-weight: 500;
     margin: 25px;
 }
+
+/* Add employees */
+.addem-box {
+    width: 500px;
+    height: auto;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: #212121;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.addem-box-inner {
+    width: 350px;
+    height: auto;
+    padding-bottom: 80px;
+    margin: auto;
+    position: relative;
+}
+
+.addem-box h1 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    color: #DA1919;
+    font-weight: 500;
+    margin: 25px;
+}
+
+#fir-box {
+    width: 350px;
+    height: 40px;
+    border-radius: 0;
+    border: none;
+    color: white;
+    border-bottom: #303030 2px solid;
+    background-color: #212121;
+    margin-bottom: 20px;
+}
+
+#sur-box {
+    width: 350px;
+    height: 40px;
+    border-radius: 0;
+    border: none;
+    color: white;
+    border-bottom: #303030 2px solid;
+    background-color: #212121;
+    margin-bottom: 20px;
+}
+
+#em-box {
+    width: 350px;
+    height: 40px;
+    border-radius: 0;
+    border: none;
+    color: white;
+    border-bottom: #303030 2px solid;
+    background-color: #212121;
+    margin-bottom: 20px;
+}
+
+#face-box {
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Edit employees */
 
 
 
