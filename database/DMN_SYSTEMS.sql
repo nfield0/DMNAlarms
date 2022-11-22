@@ -69,7 +69,10 @@ PRIMARY KEY(motion_id));
 
 /*Dummy Data*/
 
-
+/*Query for logging the fingerprint*/
+SELECT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time
+FROM employee_access_table
+INNER JOIN employee_table ON employee_access_table.employee_id = employee_table.employee_id;
 
 
 
