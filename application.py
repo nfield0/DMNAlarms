@@ -153,6 +153,7 @@ def deleteEmployee():
     if request.method == 'POST':
         id = request.form.get("employee_id")
         cursor = mysql.connection.cursor()
+        cursor.execute('''DELETE FROM employee_access_table WHERE employee_id = %s''',[id])
         cursor.execute(''' DELETE FROM employee_table WHERE employee_id = %s''', [id])
         mysql.connection.commit()
         cursor.close()
