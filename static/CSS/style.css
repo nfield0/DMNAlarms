@@ -24,7 +24,7 @@ header {
     margin-bottom: 50px;
     position: relative;
     display: block;
-    background-color: #212121;
+    background-color: #FFFFFF;
     box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
 }
 
@@ -59,11 +59,11 @@ header {
 
 .logout-box {
     font-weight: 500;
-    color: white;
+    color: black;
 }
 
 .logout-box a {
-    color: red;
+    color: #0F55D0;
     display: inline-block;
 }
 
@@ -75,7 +75,7 @@ header {
 }
 
 body {
-    background-color: #303030;
+    background-color: #F2F6FC;
 }
 
 .dmn-logo-plc {
@@ -95,11 +95,12 @@ body {
     width: 500px;
     height: 300px;
     display: inline-block;
-    border-radius: 20px;
-    background-color: #212121;
+    border-radius: 5px;
+    background-color: #FFFFFF;
     left: 50%;
     top: 50%;
     position: absolute;
+    box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
     transform: translate(-50%, -50%);
 }
 
@@ -116,7 +117,7 @@ body {
 
 .login-box h1 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-    color: #DA1919;
+    color: #0F55D0;
     font-weight: 500;
     margin: 25px;
 }
@@ -127,7 +128,7 @@ body {
     border-radius: 0;
     border: none;
     border-bottom: #303030 2px solid;
-    background-color: #212121;
+    background-color: #FFFFFF;
     margin-bottom: 20px;
 }
 
@@ -141,7 +142,7 @@ body {
     border-radius: 0;
     border: none;
     border-bottom: #303030 2px solid;
-    background-color: #212121;
+    background-color: #FFFFFF;
     margin-bottom: 20px;
 }
 
@@ -154,11 +155,12 @@ body {
     height: 30px;
     width: auto;
     color: white;
-    padding-left: 5px;
-    padding-right: 5px;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
     border-radius: 5px;
     border: none;
-    background-color: red;
+    background-color: #0F55D0;
 }
 
 .main-wrapper {
@@ -168,12 +170,12 @@ body {
 
 /* Employee Box */
 .em-box {
-    width: 1000px;
+    width: 72%;
     height: auto;
     min-height: 600px;
     display: inline-block;
     border-radius: 20px;
-    background-color: #212121;
+    background-color: #FFFFFF;
     box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
     float: left;
     position: relative;
@@ -185,7 +187,7 @@ body {
 
 .employeesTable h1 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-    color: #DA1919;
+    color: #0F55D0;
     font-weight: 500;
     margin: 25px;
 }
@@ -204,7 +206,7 @@ body {
 }
 
 .emTable {
-    width: 950px;
+    width: 95%;
     margin: auto;
     margin-bottom: 50px;
 }
@@ -217,8 +219,9 @@ body {
     height: 70px;
     width: 100%;
     border-radius: 5px;
-    background-color: #424242;
+    background-color: #EFF3F8;
     margin-top: 10px;
+    box-shadow: 0px 2px 5px rgb(0 0 0 / 10%);
     margin-bottom: 10px;
     position: relative;
 }
@@ -245,7 +248,7 @@ body {
 }
 
 .emID {
-    color: white;
+    color: black;
     height: auto;
     display: inline-block;
     font-size: 20px;
@@ -254,7 +257,7 @@ body {
 }
 
 .emName {
-    color: white;
+    color: black;
     height: auto;
     display: inline-block;
     font-size: 20px;
@@ -263,7 +266,7 @@ body {
 }
 
 .emEmail {
-    color: white;
+    color: black;
     height: auto;
     display: inline-block;
     font-size: 20px;
@@ -304,7 +307,7 @@ body {
     color: white;
     border-radius: 5px;
     border: none;
-    background-color: red;
+    background-color: #0F55D0;
 }
 
 #edit-form:hover {
@@ -322,15 +325,15 @@ body {
     color: white;
     border-radius: 5px;
     border: none;
-    background-color: red;
+    background-color: #0F55D0;
 }
 
 .f-box {
-    width: 400px;
+    width: 26%;
     height: 600px;
     display: inline-block;
-    border-radius: 20px;
-    background-color: #212121;
+    border-radius: 5px;
+    background-color: #FFFFFF;
     box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
     float: right;
     position: relative;
@@ -338,7 +341,7 @@ body {
 
 .f-box h1{
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-    color: #DA1919;
+    color: #0F55D0;
     font-weight: 500;
     margin: 25px;
 }
@@ -348,8 +351,9 @@ body {
     width: 500px;
     height: auto;
     display: inline-block;
-    border-radius: 20px;
-    background-color: #212121;
+    border-radius: 5px;
+    box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
+    background-color: #FFFFFF;
     left: 50%;
     top: 50%;
     position: absolute;
@@ -366,7 +370,7 @@ body {
 
 .addem-box h1 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-    color: #DA1919;
+    color: #0F55D0;
     font-weight: 500;
     margin: 25px;
 }
@@ -376,9 +380,9 @@ body {
     height: 40px;
     border-radius: 0;
     border: none;
-    color: white;
+    color: black;
     border-bottom: #303030 2px solid;
-    background-color: #212121;
+    background-color: #FFFFFF;
     margin-bottom: 20px;
 }
 
@@ -387,9 +391,9 @@ body {
     height: 40px;
     border-radius: 0;
     border: none;
-    color: white;
+    color: black;
     border-bottom: #303030 2px solid;
-    background-color: #212121;
+    background-color: #FFFFFF;
     margin-bottom: 20px;
 }
 
@@ -398,9 +402,9 @@ body {
     height: 40px;
     border-radius: 0;
     border: none;
-    color: white;
+    color: black;
     border-bottom: #303030 2px solid;
-    background-color: #212121;
+    background-color: #FFFFFF;
     margin-bottom: 20px;
 }
 
