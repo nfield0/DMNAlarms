@@ -8,7 +8,6 @@ from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
-from flask_mysqldb import MySQL
 from datetime import datetime
 
 
