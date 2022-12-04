@@ -1,4 +1,4 @@
-from dateutil.utils import today
+
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from flask_mysqldb import MySQL
@@ -62,7 +62,7 @@ class SubscribeHandler(SubscribeCallback):
             cur = mysql.connection.cursor()
             cur.execute(''' SELECT * FROM employee_table where employee_id == message.message['finger_scanner']''')
             account = cur.fetchone()
-            currentDay = today()
+            currentDay = datetime.now().time()
             currentTime = datetime.now().time()
             print(message.message['finger_scanner'])
             cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 6))

@@ -201,7 +201,7 @@ body {
 .emNewButton h2 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
     font-size: 15px;
-    color: white;
+    color: #0F55D0;
     margin-bottom: 10px;
 }
 
@@ -289,11 +289,11 @@ body {
 
 .emButtons {
     z-index: 2;
-    height: 25px;
-    right: 5%;
+    height: 30px;
+    right: 0%;
     top: 50%;
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translate(-10%, -50%);
 }
 
 .emEditButton {
