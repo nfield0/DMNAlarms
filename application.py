@@ -38,7 +38,7 @@ pnconfig = PNConfiguration()
 
 pnconfig.subscribe_key = 'sub-c-5efa4cb5-6f01-42ea-a6ac-98b3dccd764a'
 pnconfig.publish_key = 'pub-c-6df66f48-e71d-41ea-a2a7-d696bda5a561'
-pnconfig.uuid = 'exterior-pi'
+pnconfig.uuid = 'webserver'
 pubnub = PubNub(pnconfig)
 
 pubnub.subscribe()\
@@ -59,15 +59,19 @@ class SubscribeHandler(SubscribeCallback):
         print("Message publisher: %s" % message.publisher)
 
         with app.app_context():
-            cur = mysql.connection.cursor()
-            cur.execute(''' SELECT * FROM employee_table where employee_id == message.message['finger_scanner']''')
-            account = cur.fetchone()
-            currentDay = today()
-            currentTime = datetime.now().time()
-            print(message.message['finger_scanner'])
-            cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 6))
-            mysql.connection.commit()
-            cur.close()
+
+            if message.publisher == "exterior-pi":
+                print("pi exclusive")
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute(''' SELECT * FROM employee_table where employee_id == message.message['finger_scanner']''')
+                account = cur.fetchone()
+                currentDay = today()
+                currentTime = datetime.now().time()
+                print(message.message['finger_scanner'])
+                cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''', (currentDay,currentTime, 6))
+                mysql.connection.commit()
+                cur.close()
 
 
 pubnub.add_listener(SubscribeHandler())
@@ -217,10 +221,10 @@ def editEmployeeData(employee_id):
         secondname = request.form.get("surname")
         email = request.form.get("email")
         face = request.form.get("face")
-        finger = 7
+        finger = request.form.get("finger")
 
         print(emp_id)
-        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test =%s WHERE employee_id = %s''',(emp_id, firstname, secondname, email,  face, emp_id))
+        c.execute(''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test =%s, fingerprint_id =%s WHERE employee_id = %s''',(emp_id, firstname, secondname, email,  face, finger, emp_id))
         print(firstname)
         mysql.connection.commit()
         c.close()

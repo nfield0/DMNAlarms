@@ -1,13 +1,14 @@
 let aliveSecond = 0;
 let heartbeatRate = 1000;
-let myChannel = "dmn_pi_channel";
+let myChannel = "dmn-channel";
 let pubnub;
 
+let letScannedId;
 const setupPubNub = () =>{
     pubnub = new PubNub({
-        publishKey: 'Publish Key',
-        subscribeKey: 'Subscribe Key',
-        userId: "giga-pi"
+        publishKey: 'pub-c-6df66f48-e71d-41ea-a2a7-d696bda5a561',
+        subscribeKey: 'sub-c-5efa4cb5-6f01-42ea-a6ac-98b3dccd764a',
+        userId: "serverJS"
     });
 
     const listener = {
@@ -17,7 +18,15 @@ const setupPubNub = () =>{
             }
         },
         message: (messageEvent) => {
-            console.log(messageEvent);
+
+			if(messageEvent.message['finger_scanner_new'])
+			{
+				console.log("HERE")
+				console.log(messageEvent.message['finger_scanner_new']);
+				lastScannedId = messageEvent.message['finger_scanner_new']
+				document.getElementById("fingerprint-box").value = lastScannedId;
+			}
+
         },
         presence: (presenceEvent) => {
             //Handle presence
@@ -33,7 +42,7 @@ const publishMessage = async (message) => {
     const publishPayload = {
         channel : myChannel,
         message: {
-            title: "Sensor values",
+            title: "Command",
             description: message
         }
     };
@@ -92,3 +101,16 @@ function handleClick(cb){
 	}
 	publishMessage(cb.id+"-"+value);
 }
+
+function registerPrint()
+{
+	setupPubNub()
+	publishMessage("CMD2")
+
+
+	console.log()
+
+
+}
+
+window.onload = setupPubNub;
