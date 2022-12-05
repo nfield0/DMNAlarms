@@ -45,14 +45,16 @@
     <div class="f-box">
         <h1>Log Fingerprints</h1>
         <div>
-            {% for current in log %}
-            <div class="emTableRow">
-                <div>{{current[0]}}</div>
-                <div>{{current[1]}}</div>
-                <div>{{current[2]}}</div>
-                <div>{{current[3]}}</div>
-            </div>
+            <div class="emTable">
+                {% for current in log %}
+                <div class="emTableRow">
+                    <div>{{current[0]}}</div>
+                    <div>{{current[1]}}</div>
+                    <div>{{current[2]}}</div>
+                    <div>{{current[3]}}</div>
+                </div>
             {% endfor %}
+            </div>
         </div>
     </div>
 </div>
