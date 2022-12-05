@@ -404,7 +404,7 @@ def main():
     #     str = input("Please input command (CMD1-CMD6):")
     #     Analysis_PC_Command(str)
 
-
+    Analysis_PC_Command("CMD3")
 
 
 class SubscribeHandler(SubscribeCallback):
@@ -416,6 +416,7 @@ class SubscribeHandler(SubscribeCallback):
         if message.publisher == "serverJS":
             print(message.message['description'])
         # if message.message['title'] == "Command":
+
             Analysis_PC_Command(message.message['description'])
 
 
