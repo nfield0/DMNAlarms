@@ -8,14 +8,23 @@
       <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden" value="{{employee[0]}}">
       <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text" value="{{employee[1]}}">
       <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text" value="{{employee[2]}}">
-        <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text" value="{{employee[3]}}">
-       <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="text">
-      <input id="finger-box" autocomplete="off" autofocus name="finger" placeholder="Upload image of your finger" type="text">
+      <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text" value="{{employee[3]}}">
+      <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="text">
+      <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text" value="{{employee[6]}}">
+
 
 
 
       <input id="button-login" type="submit" value="Edit Employee">
     </form>
+<button id="register_finger" autofocus name="fingerprint" value="Register Fingerprint" type="submit" onclick="registerPrint()">
+          Add new fingerprint from scanner
+      </button>
+
+
+
+      <br>
+      <br>
 
   </div>
 </div>

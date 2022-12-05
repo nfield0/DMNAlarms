@@ -7,9 +7,9 @@
 Our IoT application is an alarm system for single-entry rooms containing valuable documents of some form. After passing fingerprint and facial recognition, the electric strike door lock is unlocked, and entry is granted. There is a door sensor to detect when the door is open and closed. A Database is used to store fingerprint, facial images, date, and time of access. Each stage of the process is accompanied by a speaker, buzzer, and LCD display to guide the user through the system. A flask website is to be used to facilitate a typical front-end user.
 
 ### Team Members Roles:
-David Campion: UX & User Testing<br />
-Michael Flynn: Database, Co-Backend + Branding <br />
-Nathan Field: Frontend + Co-Backend <br />
+David Campion: Frontend Developer<br />
+Michael Flynn: Database Manager & Lead Tester <br />
+Nathan Field: Backend Developer <br />
 Nikita Fedans: Hardware + Architecture <br />
 
 

@@ -395,10 +395,33 @@ def main():
 
     global latest_scanned_id
 
-    while True:
-        print("Latest Scanned ID: ", latest_scanned_id)
-        str = input("Please input command (CMD1-CMD6):")
-        Analysis_PC_Command(str)
+
+
+
+
+    # while True:
+    #     print("Latest Scanned ID: ", latest_scanned_id)
+    #     str = input("Please input command (CMD1-CMD6):")
+    #     Analysis_PC_Command(str)
+
+
+
+
+class SubscribeHandler(SubscribeCallback):
+    def message(self, pubnub, message):
+        print("Message payload: %s" % message.message)
+        print("Message publisher: %s" % message.publisher)
+
+
+        if message.publisher == "serverJS":
+            print(message.message['description'])
+        # if message.message['title'] == "Command":
+            Analysis_PC_Command(message.message['description'])
+
+
+
+
+
 
 #pubnub
 def publish(custom_channel, msg):
@@ -464,7 +487,8 @@ class MySubscribeCallback(SubscribeCallback):
 if __name__ == '__main__':
     try:
         main()
-        pubnub.add_listener(main())
+        # pubnub.add_listener(main())
+        pubnub.add_listener(SubscribeHandler())
         pubnub.subscribe().channels(myChannel).execute()
     except KeyboardInterrupt:
         if ser != None:
