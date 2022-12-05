@@ -1,51 +1,19 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if session.name %}
-    You are logged in as {{session.name}}
-    <a href="/logout">Log out</a>
-<div class="login-box">
-    <h1>Employee {{employee[1]}}, {{employee[2]}}</h1>
-  <div class="employeesTable">
-      <table>
-          <thead>
-            <tr>
-                <th>id</th>
-                <th>firstname</th>
-                <th>surname</th>
-                <th>email</th>
-                <th>fingerprint</th>
-                <th>face</th>
-            </tr>
-          </thead>
-           <tbody>
-            {% for current in employees %}
-            <tr>
-            <td>{{ current[0] }}</td>
-            <td>{{ current[1] }}</td>
-            <td>{{ current[2] }}</td>
-            <td>{{ current[3] }}</td>
-            <td>{{ current[4] }}</td>
-            <td><img src="static/images/{{current[6]}}" height="50px"/> </td>
-            <td>
-                <form id="edit-form" action="/editEmployee" method="post">
-                    <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
-                    <input autocomplete="off" autofocus type="submit" value="Edit">
-                </form>
-            </td>
-            <td>
-                <form id="delete-form" action="/deleteEmployee" method="post">
-                    <input autocomplete="off" autofocus name="employee_id" type="hidden" value="{{current[0]}}">
-                    <input autocomplete="off" autofocus type="submit" value="Delete">
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-      </table>
-  </div>
-</div>
-<div>
-    <a href="/addEmployees">Add new employee to the database</a>
+<div class="view-employ-wrapper">
+    <div class="view-employ-inner">
+        <div class="view-employ-box-left">
+            <img src="../static/images/{{employee[5]}}"/>
+        </div>
+        <div class="view-employ-box-right">
+            <h1>{{employee[1]}} {{employee[2]}}</h1>
+            <div class="view-employ-txt">
+                <h2>ID: {{employee[0]}}</h2>
+                <h2>Email: {{employee[3]}}</h2>
+            </div>
+        </div>
+    </div>
 </div>
 {% else %}
     You are not logged in.<a href="/login">Log in</a>
