@@ -2,8 +2,11 @@
 {% block body %}
 {% if session.name %}
 <div class="addem-box">
+
     <h1>Edit Employee {{employee[0]}}</h1>
   <div class="addem-box-inner">
+            <img src="../static/images/{{employee[5]}}" width="250px" height="250px"/>
+
     <form id="edit-form" action="/editEmployeeData/{{employee[0]}}" method="post">
       <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden" value="{{employee[0]}}">
       <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text" value="{{employee[1]}}">
@@ -11,8 +14,6 @@
       <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text" value="{{employee[3]}}">
       <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="text">
       <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text" value="{{employee[6]}}">
-
-
 
 
       <input id="button-login" type="submit" value="Edit Employee">

@@ -6,6 +6,7 @@ import time
 import threading
 import sys
 import RPi.GPIO as GPIO
+import first_working_face_recog
 
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
@@ -381,7 +382,7 @@ def main():
     print(" send commands to operate the module: ")
     print("  CMD1 : Query the number of existing fingerprints")
     print(
-        "  CMD2 : Registered fingerprint  (Put your finger on the sensor until successfully/failed information returned) ")
+        "  CMD2 : Register fingerprint  (Put your finger on the sensor until successfully/failed information returned) ")
     print("  CMD3 : Fingerprint matching  (Send the command, put your finger on sensor) ")
     print("  CMD4 : Clear fingerprints ")
     print(
@@ -418,6 +419,14 @@ class SubscribeHandler(SubscribeCallback):
         # if message.message['title'] == "Command":
 
             Analysis_PC_Command(message.message['description'])
+
+        msg = message.message
+
+
+        key = list(msg.keys())
+        if key[0] == "Account":
+            print("Account matched")
+            #start facial recognition
 
 
 

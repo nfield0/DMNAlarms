@@ -30,7 +30,18 @@ employee_id INT NOT NULL,
 PRIMARY KEY(access_id),
 FOREIGN KEY(employee_id) REFERENCES employee_table(employee_id));
 
+/* Root Admin */
+INSERT INTO admin values(null,"root","Password");
 /* Stop here for initial running of code */
+
+
+
+
+
+
+
+
+
 
 CREATE TABLE fingerprint_table(
 fingerprint_id INT NOT NULL AUTO_INCREMENT,
@@ -107,5 +118,5 @@ INSERT INTO face_table values(face_id, face_image);
 END;
 
 
-INSERT INTO admin values(null,"Jim","Password");
+
 

@@ -98,8 +98,8 @@ def boot():
 #start thread for each of these
     #motionDetection()
     #press_detection()
-    #fingerprint_Sensing()
-    facial_Recognition()
+    fingerprint_Sensing()
+    #facial_Recognition()
 
 
 

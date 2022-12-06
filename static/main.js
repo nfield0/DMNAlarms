@@ -21,7 +21,6 @@ const setupPubNub = () =>{
 
 			if(messageEvent.message['finger_scanner_new'])
 			{
-				console.log("HERE")
 				console.log(messageEvent.message['finger_scanner_new']);
 				lastScannedId = messageEvent.message['finger_scanner_new']
 				document.getElementById("fingerprint-box").value = lastScannedId;
@@ -104,13 +103,13 @@ function handleClick(cb){
 
 function registerPrint()
 {
-	setupPubNub()
+
 	publishMessage("CMD2")
-
-
 	console.log()
+}
+function clearPrints(){
 
-
+	publishMessage("CMD4")
 }
 
 window.onload = setupPubNub;
