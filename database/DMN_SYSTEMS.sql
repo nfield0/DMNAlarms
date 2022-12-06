@@ -7,19 +7,26 @@ USE DMN_Alarms;
 
 
 CREATE TABLE admin(
-    adminId INT NOT NULL AUTO_INCREMENT,
-    adminEmail VARCHAR(250) NOT NULL,
-    adminPassword VARCHAR(30) NOT NULL ,
-    PRIMARY KEY(adminId));
+adminId INT NOT NULL AUTO_INCREMENT,
+adminEmail VARCHAR(250) NOT NULL,
+adminPassword VARCHAR(30) NOT NULL ,
+PRIMARY KEY(adminId));
+
+CREATE TABLE face_table(
+face_id INT NOT NULL AUTO_INCREMENT,
+face_test BLOB NOT NULL,
+img_filename varchar(50) NOT NULL,
+PRIMARY KEY(face_id));
+
 
 CREATE TABLE employee_table(
 employee_id INT NOT NULL AUTO_INCREMENT,
 employee_firstname VARCHAR (20) NOT NULL,
 employee_surname VARCHAR (30) NOT NULL,
 employee_email VARCHAR (50) NOT NULL,
-face_test BLOB NOT NULL, /*Change back to relational*/
-img_filename varchar(50) NOT NULL, /*Change back to relational*/
+face_id INT NOT NULL,
 fingerprint_id INT NOT NULL,
+FOREIGN KEY (face_id) REFERENCES face_table(face_id),
 PRIMARY KEY(employee_id));
 
 CREATE TABLE employee_access_table(
@@ -30,30 +37,17 @@ employee_id INT NOT NULL,
 PRIMARY KEY(access_id),
 FOREIGN KEY(employee_id) REFERENCES employee_table(employee_id));
 
-/* Root Admin */
-INSERT INTO admin values(null,"root","Password");
 /* Stop here for initial running of code */
 
-
-
-
-
-
-
-
-
-
-CREATE TABLE fingerprint_table(
+/*Realised this table was needed as the fingerprint is stored on the pi*/
+/*CREATE TABLE fingerprint_table(
 fingerprint_id INT NOT NULL AUTO_INCREMENT,
 fingerprint_image BLOB(255) NOT NULL,
-PRIMARY KEY(fingerprint_id));
+PRIMARY KEY(fingerprint_id));*/
 
 
-/*WORKING TITLE IF YOUS HAVE A BETTER NAME PLEASE DONT HESITATE TO CHANGE IT :)*/
-CREATE TABLE face_table(
-face_id INT NOT NULL AUTO_INCREMENT,
-face_image BLOB(255) NOT NULL,
-PRIMARY KEY(fingerprint_id));
+
+
 
 
 
@@ -111,12 +105,12 @@ SELECT * FROM motion;
 DROP TRIGGER IF EXISTS multiAdd;
 CREATE TRIGGER multiAdd
 AFTER INSERT ON employee_table
-FOR EACH ROW 
+FOR EACH ROW
 BEGIN
 INSERT INTO fingerprint_table values(fingerprint_id, fingerprint_image);
 INSERT INTO face_table values(face_id, face_image);
 END;
 
 
-
+INSERT INTO admin values(null,"Jim","Password");
 
