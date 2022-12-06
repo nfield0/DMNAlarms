@@ -1,4 +1,5 @@
 import base64
+import os
 import sys
 
 from dateutil.utils import today
@@ -6,12 +7,17 @@ from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
+
 import datetime
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -21,11 +27,11 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = "superSecret"
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_HOST'] = os.getenv("MYSQL_HOST")
+app.config['MYSQL_USER'] = os.getenv("MYSQL_USER")
 # app.config['MYSQL_PASSWORD'] = 'Password1#'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'dmn_alarms'
+app.config['MYSQL_PASSWORD'] = os.getenv("MYSQL_PASSWORD")
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 # app.config['UPLOAD_FOLDER'] = 'var/www/FlaskApp/FlaskApp/static/images/'
 app.config['UPLOAD_FOLDER'] = 'static/images/'
@@ -38,8 +44,8 @@ data = {}
 
 pnconfig = PNConfiguration()
 
-pnconfig.subscribe_key = 'sub-c-5efa4cb5-6f01-42ea-a6ac-98b3dccd764a'
-pnconfig.publish_key = 'pub-c-6df66f48-e71d-41ea-a2a7-d696bda5a561'
+pnconfig.subscribe_key = os.getenv("SUBCRIBE_KEY")
+pnconfig.publish_key = os.getenv("PUBLISH_KEY")
 pnconfig.uuid = 'webserver'
 pubnub = PubNub(pnconfig)
 
