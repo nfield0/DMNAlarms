@@ -252,7 +252,7 @@ def registerEmployee():
         img_filename = face.filename
         cursor.execute('''INSERT INTO face_table VALUES(NULL,%s,%s)''',(empPicture, img_filename))
 
-        cursor.execute('''SELECT DISTINCT face_id FROM face_table WHERE face_test =%s''', [empPicture])
+        cursor.execute('''SELECT face_id FROM face_table WHERE img_filename =%s''', [img_filename])
         account = cursor.fetchone()
         print(account[0])
 
@@ -313,12 +313,15 @@ def editEmployeeData(employee_id):
         finger = request.form.get("finger")
 
         face = request.files.get("face")
+
         print(face)
         if not face:
            return 'No Image Uploaded', 400
         else:
+
             filename = secure_filename(face.filename)
             face.save(app.config['UPLOAD_FOLDER'] + filename)
+
 
         cursor = mysql.connection.cursor()
         empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
@@ -333,7 +336,7 @@ def editEmployeeData(employee_id):
 
         c.execute(
             ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
-            (emp_id, firstname, secondname, email, account[0], finger, emp_id))
+            (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
         print(firstname)
         mysql.connection.commit()
         c.close()
