@@ -44,7 +44,7 @@ data = {}
 
 pnconfig = PNConfiguration()
 
-pnconfig.subscribe_key = os.getenv("SUBCRIBE_KEY")
+pnconfig.subscribe_key = os.getenv("SUBSCRIBE_KEY")
 pnconfig.publish_key = os.getenv("PUBLISH_KEY")
 pnconfig.uuid = 'webserver'
 pubnub = PubNub(pnconfig)
@@ -150,7 +150,7 @@ def index():
     if not session.get("email"):
         return redirect("/login")
     cursor = mysql.connection.cursor()
-    cursor.execute(''' SELECT * FROM employee_table''')
+    cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, fc.face_test, fc.img_filename FROM employee_table emp, face_table fc WHERE emp.face_id = fc.face_id;''')
     employees = cursor.fetchall()
 
     cursor.execute(''' SELECT DISTINCT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time FROM employee_access_table ac, employee_table emp WHERE ac.employee_id = emp.employee_id;
@@ -164,7 +164,6 @@ def index():
         write_file(row[4], app.config['UPLOAD_FOLDER'] + row[5])
         # image = row[5]
         # encoded.append(base64.b64encode(image))
-
     return render_template("index.html", employees=employees, log=log)
 
 
@@ -241,6 +240,7 @@ def registerEmployee():
         email = request.form.get("email")
         finger = request.form.get("finger")
         face = request.files.get("face")
+        print(face)
         if not face:
             return 'No Image Uploaded', 400
         else:
@@ -250,10 +250,19 @@ def registerEmployee():
         cursor = mysql.connection.cursor()
         empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
         img_filename = face.filename
-        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s,%s)''',
-                       (firstname, surname, email, empPicture, img_filename, finger))
+        cursor.execute('''INSERT INTO face_table VALUES(NULL,%s,%s)''',(empPicture, img_filename))
+
+        cursor.execute('''SELECT DISTINCT face_id FROM face_table WHERE face_test =%s''', [empPicture])
+        account = cursor.fetchone()
+        print(account[0])
+
+
+        cursor.execute('''INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''',
+                       (firstname, surname, email, account[0], finger))
+
         mysql.connection.commit()
         cursor.close()
+
         return redirect("/")
     return render_template("index.html")
 
@@ -262,7 +271,11 @@ def registerEmployee():
 def viewOneEmployee(employee_id):
     emp_id = employee_id
     cursor = mysql.connection.cursor()
-    cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
+    cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, 
+                        fc.face_test, fc.img_filename FROM employee_table emp, 
+                        face_table fc WHERE emp.face_id = fc.face_id 
+                        AND emp.employee_id =%s''', (emp_id,))
+
     employee = cursor.fetchone()
     cursor.close()
     # encoded=[]
@@ -293,16 +306,34 @@ def editEmployeeData(employee_id):
     if request.method == 'POST':
         c = mysql.connection.cursor()
         emp_id = request.form.get("employee_id")
+        fc_id = request.form.get("face_id")
         firstname = request.form.get("firstname")
         secondname = request.form.get("surname")
         email = request.form.get("email")
-        face = request.form.get("face")
         finger = request.form.get("finger")
 
+        face = request.files.get("face")
+        print(face)
+        if not face:
+           return 'No Image Uploaded', 400
+        else:
+            filename = secure_filename(face.filename)
+            face.save(app.config['UPLOAD_FOLDER'] + filename)
+
+        cursor = mysql.connection.cursor()
+        empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
+        img_filename = face.filename
+        cursor.execute('''UPDATE face_table SET face_id = %s, face_test =%s, img_filename = %s WHERE face_id =%s''', (fc_id,empPicture, img_filename, fc_id))
+
         print(emp_id)
+
+        c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''',[fc_id])
+        account = c.fetchone()
+        print(account[0])
+
         c.execute(
-            ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test =%s, fingerprint_id =%s WHERE employee_id = %s''',
-            (emp_id, firstname, secondname, email, face, finger, emp_id))
+            ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
+            (emp_id, firstname, secondname, email, account[0], finger, emp_id))
         print(firstname)
         mysql.connection.commit()
         c.close()
@@ -316,7 +347,11 @@ def viewEditEmployee(employee_id):
     if request.method == 'POST':
         emp_id = employee_id
         cursor = mysql.connection.cursor()
-        cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
+        cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, 
+                              fc.face_test, fc.img_filename, emp.fingerprint_id, fc.face_id FROM employee_table emp, 
+                               face_table fc WHERE emp.face_id = fc.face_id 
+                               AND emp.employee_id =%s''', (emp_id,))
+
         employee = cursor.fetchone()
         cursor.close()
 
