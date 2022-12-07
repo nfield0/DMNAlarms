@@ -1,6 +1,9 @@
 import base64
 import os
 import sys
+from time import sleep
+import socket
+from PIL import Image
 
 from dateutil.utils import today
 from flask import Flask, redirect, render_template, request, session
@@ -44,7 +47,7 @@ data = {}
 
 pnconfig = PNConfiguration()
 
-pnconfig.subscribe_key = os.getenv("SUBCRIBE_KEY")
+pnconfig.subscribe_key = os.getenv("SUBSCRIBE_KEY")
 pnconfig.publish_key = os.getenv("PUBLISH_KEY")
 pnconfig.uuid = 'webserver'
 pubnub = PubNub(pnconfig)
@@ -69,6 +72,8 @@ def my_publish_callback(envelope, status):
         pass  # Message successfully published to specified channel.
     else:
         print("not published")
+        print(status)
+        print(status.is_error())
         pass  # Handle message publish error. Check 'category' property to find out possible issue
         # because of which request did fail.
         # Request can be resent using: [status retry];
@@ -118,15 +123,45 @@ class MySubscribeCallback(SubscribeCallback):
                 mysql.connection.commit()
                 cur.close()
 
-                #print(account[4])
+                print("WE HERE ")
+                print(account[0])
+                print(account[1])
+                print(account[2])
+                print(account[3])
+                print(account[4])
 
-                base64_bytes = base64.b64encode(account[4])
-                base64_string = base64_bytes.decode("ascii")
-                print(base64_string)
+                receivedImg = open('receivedImg.jpg','wb')
+                receivedImg.write(account[4])
+                receivedImg.close()
 
-                accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2], "base64image" : base64_string}
+                # base64_bytes = base64.b64encode(account[4])
+                # base64_string = base64_bytes.decode("ascii")
+                # print(base64_string)
+
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(("8.8.8.8", 80))
+                current_ip = s.getsockname()[0]
+                s.close()
+
+                accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2], "host": current_ip}
                 print(accDetails)
                 publish(myChannel, {"Account": accDetails})
+                sleep(5)
+
+
+                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client.connect((current_ip, 1002))
+
+                file = open('receivedImg.jpg', 'rb')
+                image_data = file.read(2048)
+
+                while image_data:
+                    client.send(image_data)
+                    image_data = file.read(2048)
+
+                file.close()
+                client.close()
+
 
                 #     print("Opened fine")
                 #     envelope = pubnub.send_file().channel(myChannel).file_name("test.jpg").message({"test_message": "test"}).should_store(True).file_object(fd).cipher_key("secret").sync()
