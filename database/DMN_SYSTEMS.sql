@@ -116,6 +116,7 @@ SELECT * FROM door_records_tables;
 SELECT * FROM motion;
 
 
+
 /*VIEWS*/
 
 CREATE VIEW view_face_and_access_time AS
