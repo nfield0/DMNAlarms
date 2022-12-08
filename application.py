@@ -316,30 +316,47 @@ def editEmployeeData(employee_id):
 
         print(face)
         if not face:
-           return 'No Image Uploaded', 400
+            cursor = mysql.connection.cursor()
+
+            print(emp_id)
+
+            c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''', [fc_id])
+            account = c.fetchone()
+            print(account[0])
+
+            c.execute(
+                ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
+                (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
+            print(firstname)
+            mysql.connection.commit()
+            c.close()
+
+
+
+
         else:
 
             filename = secure_filename(face.filename)
             face.save(app.config['UPLOAD_FOLDER'] + filename)
 
 
-        cursor = mysql.connection.cursor()
-        empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
-        img_filename = face.filename
-        cursor.execute('''UPDATE face_table SET face_id = %s, face_test =%s, img_filename = %s WHERE face_id =%s''', (fc_id,empPicture, img_filename, fc_id))
+            cursor = mysql.connection.cursor()
+            empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
+            img_filename = face.filename
+            cursor.execute('''UPDATE face_table SET face_id = %s, face_test =%s, img_filename = %s WHERE face_id =%s''', (fc_id,empPicture, img_filename, fc_id))
 
-        print(emp_id)
+            print(emp_id)
 
-        c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''',[fc_id])
-        account = c.fetchone()
-        print(account[0])
+            c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''',[fc_id])
+            account = c.fetchone()
+            print(account[0])
 
-        c.execute(
-            ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
-            (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
-        print(firstname)
-        mysql.connection.commit()
-        c.close()
+            c.execute(
+                ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
+                (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
+            print(firstname)
+            mysql.connection.commit()
+            c.close()
 
 
         return redirect("/")
