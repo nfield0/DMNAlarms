@@ -8,6 +8,8 @@ from flask_session import Session
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 
+import bcrypt
+
 import datetime
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
@@ -175,14 +177,36 @@ def login():
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
         name = request.form.get("email")
         session["email"] = name
-        password = request.form['password']
+        passwordAttempt = request.form.get('password')
+
+
+
+
         cursor = mysql.connection.cursor()
-        cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s AND adminPassword = %s''', (name, password,))
+        cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s''', (name,))
+        account = cursor.fetchone()
+        accPassword = account[2]
+
+        # Taking user entered password
+        userPassword = passwordAttempt
+
+        # encoding user password
+        userBytes = userPassword.encode('ascii')
+
+
+
+        # checking password
+        result = bcrypt.checkpw(userBytes, accPassword.encode('ascii'))
+
+        print(result)
+
+        #cursor = mysql.connection.cursor()
+        #cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s AND adminPassword = %s''', (name, password,))
 
         account = cursor.fetchone()
         cursor.close()
 
-        if account:
+        if result:
             session["name"] = name
             return redirect("/")
             # # Create session data, we can access this data in other routes
@@ -210,9 +234,21 @@ def register():
     if request.method == 'POST':
         name = request.form.get("email")
         session["email"] = name
-        password = request.form['password']
+        password = request.form.get('password')
+
+        # Calculating a hash
+        # converting password to array of bytes
+        bytes = password.encode('ascii')
+
+        # generating the salt
+        salt = bcrypt.gensalt()
+
+        # Hashing the password
+        hash = bcrypt.hashpw(bytes, salt)
+
+
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO admin VALUES(null,%s,%s)''', (name, password))
+        cursor.execute(''' INSERT INTO admin VALUES(null,%s,%s)''', (name, hash))
         mysql.connection.commit()
         cursor.close()
         return redirect("/login")
