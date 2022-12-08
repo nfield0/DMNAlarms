@@ -151,7 +151,7 @@ body {
     outline: none;
 }
 
-#button-login {
+#button-login, #register_finger {
     float: left;
     height: 30px;
     width: auto;
