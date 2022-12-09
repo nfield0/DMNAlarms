@@ -146,7 +146,7 @@ class MySubscribeCallback(SubscribeCallback):
                 accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2], "host": current_ip}
                 print(accDetails)
                 publish(myChannel, {"Account": accDetails})
-                sleep(5)
+                sleep(0.5)
 
 
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
