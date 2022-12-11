@@ -6,7 +6,7 @@ import threading
 import cv2
 import os
 import time
-import vlc
+#import vlc
 
 myChannel = "dmn-channel"
 sensorList = ["finger_scanner, finger_scanner_new"]
@@ -90,11 +90,11 @@ class MySubscribeCallback(SubscribeCallback):
 
 os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 
-p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
+#p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
 
-def play_success():
-    p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
-    p.play()
+##def play_success():
+##    p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
+ ##   p.play()
 import argparse
 
 # Load the cascade
@@ -170,7 +170,7 @@ def show_image_scan_image_again():
     cv2.waitKey(0)
 
 def show_drawn_text(name_for_auth):
-    play_success()
+    ##play_success()
 
 
     img = cv2.imread("screen_img.jpg")
@@ -215,7 +215,11 @@ class SubscribeHandler(SubscribeCallback):
         print("Message payload: %s" % message.message)
         print("Message publisher: %s" % message.publisher)
 
-        show_drawn_text("allexx")
+        if (message.message):
+            show_drawn_text(message.message[1])
+            publish(myChannel, {"Lock": 1})
+        else:
+            show_drawn_text("allexx")
 
 pubnub.add_listener(SubscribeHandler())
     #

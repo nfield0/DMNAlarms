@@ -11,8 +11,6 @@ from flask_session import Session
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 
-import bcrypt
-
 import datetime
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
@@ -51,12 +49,25 @@ pnconfig = PNConfiguration()
 
 pnconfig.subscribe_key = os.getenv("SUBSCRIBE_KEY")
 pnconfig.publish_key = os.getenv("PUBLISH_KEY")
-pnconfig.uuid = 'webserver'
+#pnconfig.uuid = 'webserver'
+pnconfig.uuid = 'exterior-pi'
+
 pubnub = PubNub(pnconfig)
 
-pubnub.subscribe() \
-    .channels(myChannel) \
-    .execute()
+#pubnub.subscribe() \
+    #.channels(myChannel) \
+    #.execute()
+
+# def publish_callback(result, status):
+#   if status.isError:
+#     print(status.statusCode)
+#   else:
+#     print(result.timetoken)
+#
+# pubnub.publish()\
+#   .channel(myChannel) \
+#   .message({"text": "Hello World!"})\
+#   .pn_async(publish_callback)
 
 # mysql app
 mysql = MySQL(app)
@@ -114,7 +125,8 @@ class MySubscribeCallback(SubscribeCallback):
             if key[0] == "finger_scanner":
                 cur = mysql.connection.cursor()
                 fingerID = str(message.message['finger_scanner'])
-                cur.execute(''' SELECT * FROM employee_table where fingerprint_id = %s''', (fingerID))
+                print("FINGERID : ",fingerID)
+                cur.execute(''' SELECT employee_id, employee_firstname, employee_surname FROM employee_table where fingerprint_id = {0}'''.format(fingerID))
                 account = cur.fetchone()
                 print(account[0])
                 currentDay = today()
@@ -125,16 +137,16 @@ class MySubscribeCallback(SubscribeCallback):
                 mysql.connection.commit()
                 cur.close()
 
-                print("WE HERE ")
-                print(account[0])
-                print(account[1])
-                print(account[2])
-                print(account[3])
-                print(account[4])
+                #print("WE HERE ")
+                #print(account[0])
+                #print(account[1])
+                #print(account[2])
+                #print(account[3])
+                #print(account[4])
 
-                receivedImg = open('receivedImg.jpg','wb')
-                receivedImg.write(account[4])
-                receivedImg.close()
+                # receivedImg = open('receivedImg.jpg','wb')
+                # receivedImg.write(account[4])
+                # receivedImg.close()
 
                 # base64_bytes = base64.b64encode(account[4])
                 # base64_string = base64_bytes.decode("ascii")
@@ -145,24 +157,24 @@ class MySubscribeCallback(SubscribeCallback):
                 current_ip = s.getsockname()[0]
                 s.close()
 
-                accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2], "host": current_ip}
+                accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2]}
                 print(accDetails)
                 publish(myChannel, {"Account": accDetails})
-                sleep(0.5)
+                #sleep(3)
 
 
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.connect((current_ip, 1002))
-
-                file = open('receivedImg.jpg', 'rb')
-                image_data = file.read(2048)
-
-                while image_data:
-                    client.send(image_data)
-                    image_data = file.read(2048)
-
-                file.close()
-                client.close()
+                # client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                # client.connect((current_ip, 1002))
+                #
+                # file = open('receivedImg.jpg', 'rb')
+                # image_data = file.read(2048)
+                #
+                # while image_data:
+                #     client.send(image_data)
+                #     image_data = file.read(2048)
+                #
+                # file.close()
+                # client.close()
 
 
                 #     print("Opened fine")
@@ -187,7 +199,7 @@ def index():
     if not session.get("email"):
         return redirect("/login")
     cursor = mysql.connection.cursor()
-    cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, fc.face_test, fc.img_filename FROM employee_table emp, face_table fc WHERE emp.face_id = fc.face_id;''')
+    cursor.execute(''' SELECT * FROM employee_table''')
     employees = cursor.fetchall()
 
     cursor.execute(''' SELECT DISTINCT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time FROM employee_access_table ac, employee_table emp WHERE ac.employee_id = emp.employee_id;
@@ -201,6 +213,7 @@ def index():
         write_file(row[4], app.config['UPLOAD_FOLDER'] + row[5])
         # image = row[5]
         # encoded.append(base64.b64encode(image))
+
     return render_template("index.html", employees=employees, log=log)
 
 
@@ -212,36 +225,14 @@ def login():
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
         name = request.form.get("email")
         session["email"] = name
-        passwordAttempt = request.form.get('password')
-
-
-
-
+        password = request.form['password']
         cursor = mysql.connection.cursor()
-        cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s''', (name,))
-        account = cursor.fetchone()
-        accPassword = account[2]
-
-        # Taking user entered password
-        userPassword = passwordAttempt
-
-        # encoding user password
-        userBytes = userPassword.encode('ascii')
-
-
-
-        # checking password
-        result = bcrypt.checkpw(userBytes, accPassword.encode('ascii'))
-
-        print(result)
-
-        #cursor = mysql.connection.cursor()
-        #cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s AND adminPassword = %s''', (name, password,))
+        cursor.execute('''SELECT * FROM admin WHERE adminEmail = %s AND adminPassword = %s''', (name, password,))
 
         account = cursor.fetchone()
         cursor.close()
 
-        if result:
+        if account:
             session["name"] = name
             return redirect("/")
             # # Create session data, we can access this data in other routes
@@ -269,21 +260,9 @@ def register():
     if request.method == 'POST':
         name = request.form.get("email")
         session["email"] = name
-        password = request.form.get('password')
-
-        # Calculating a hash
-        # converting password to array of bytes
-        bytes = password.encode('ascii')
-
-        # generating the salt
-        salt = bcrypt.gensalt()
-
-        # Hashing the password
-        hash = bcrypt.hashpw(bytes, salt)
-
-
+        password = request.form['password']
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO admin VALUES(null,%s,%s)''', (name, hash))
+        cursor.execute(''' INSERT INTO admin VALUES(null,%s,%s)''', (name, password))
         mysql.connection.commit()
         cursor.close()
         return redirect("/login")
@@ -311,7 +290,6 @@ def registerEmployee():
         email = request.form.get("email")
         finger = request.form.get("finger")
         face = request.files.get("face")
-        print(face)
         if not face:
             return 'No Image Uploaded', 400
         else:
@@ -321,32 +299,32 @@ def registerEmployee():
         cursor = mysql.connection.cursor()
         empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
         img_filename = face.filename
-        cursor.execute('''INSERT INTO face_table VALUES(NULL,%s,%s)''',(empPicture, img_filename))
-
-        cursor.execute('''SELECT face_id FROM face_table WHERE img_filename =%s''', [img_filename])
-        account = cursor.fetchone()
-        print(account[0])
-
-
-        cursor.execute('''INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s)''',
-                       (firstname, surname, email, account[0], finger))
-
+        cursor.execute(''' INSERT INTO employee_table VALUES(null,%s,%s,%s,%s,%s,%s)''',
+                       (firstname, surname, email, empPicture, img_filename, finger))
         mysql.connection.commit()
         cursor.close()
-
         return redirect("/")
     return render_template("index.html")
+
+# @app.route("/viewEditEmployee/<int:employee_id>", methods=["GET", "POST", "PUT"])
+# def viewEditEmployee(employee_id):
+#     if request.method == 'POST':
+#         emp_id = employee_id
+#         cursor = mysql.connection.cursor()
+#         cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
+#         employee = cursor.fetchone()
+#         cursor.close()
+#
+#
+#
+#     return render_template("editEmployees.html", employee=employee)
 
 
 @app.route("/viewEmployee/<int:employee_id>")
 def viewOneEmployee(employee_id):
     emp_id = employee_id
     cursor = mysql.connection.cursor()
-    cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, 
-                        fc.face_test, fc.img_filename FROM employee_table emp, 
-                        face_table fc WHERE emp.face_id = fc.face_id 
-                        AND emp.employee_id =%s''', (emp_id,))
-
+    cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
     employee = cursor.fetchone()
     cursor.close()
     # encoded=[]
@@ -377,57 +355,19 @@ def editEmployeeData(employee_id):
     if request.method == 'POST':
         c = mysql.connection.cursor()
         emp_id = request.form.get("employee_id")
-        fc_id = request.form.get("face_id")
         firstname = request.form.get("firstname")
         secondname = request.form.get("surname")
         email = request.form.get("email")
+        face = request.form.get("face")
         finger = request.form.get("finger")
 
-        face = request.files.get("face")
-
-        print(face)
-        if not face:
-            cursor = mysql.connection.cursor()
-
-            print(emp_id)
-
-            c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''', [fc_id])
-            account = c.fetchone()
-            print(account[0])
-
-            c.execute(
-                ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
-                (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
-            print(firstname)
-            mysql.connection.commit()
-            c.close()
-
-
-
-
-        else:
-
-            filename = secure_filename(face.filename)
-            face.save(app.config['UPLOAD_FOLDER'] + filename)
-
-
-            cursor = mysql.connection.cursor()
-            empPicture = convertToBinaryData(app.config['UPLOAD_FOLDER'] + face.filename)
-            img_filename = face.filename
-            cursor.execute('''UPDATE face_table SET face_id = %s, face_test =%s, img_filename = %s WHERE face_id =%s''', (fc_id,empPicture, img_filename, fc_id))
-
-            print(emp_id)
-
-            c.execute('''SELECT face_id FROM face_table WHERE face_id =%s''',[fc_id])
-            account = c.fetchone()
-            print(account[0])
-
-            c.execute(
-                ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_id =%s, fingerprint_id =%s WHERE employee_id = %s''',
-                (emp_id, firstname, secondname, email, fc_id, finger, emp_id))
-            print(firstname)
-            mysql.connection.commit()
-            c.close()
+        print(emp_id)
+        c.execute(
+            ''' UPDATE employee_table set employee_id = %s, employee_firstname  = %s, employee_surname = %s, employee_email =%s, face_test =%s, fingerprint_id =%s WHERE employee_id = %s''',
+            (emp_id, firstname, secondname, email, face, finger, emp_id))
+        print(firstname)
+        mysql.connection.commit()
+        c.close()
 
 
         return redirect("/")
@@ -438,11 +378,7 @@ def viewEditEmployee(employee_id):
     if request.method == 'POST':
         emp_id = employee_id
         cursor = mysql.connection.cursor()
-        cursor.execute(''' SELECT DISTINCT emp.employee_id,emp.employee_firstname, emp.employee_surname, emp.employee_email, 
-                              fc.face_test, fc.img_filename, emp.fingerprint_id, fc.face_id FROM employee_table emp, 
-                               face_table fc WHERE emp.face_id = fc.face_id 
-                               AND emp.employee_id =%s''', (emp_id,))
-
+        cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
         employee = cursor.fetchone()
         cursor.close()
 
@@ -450,4 +386,5 @@ def viewEditEmployee(employee_id):
 
 
 if __name__ == '__main__':
+    pubnub.subscribe().channels(myChannel).execute()
     app.run(port=5000)
