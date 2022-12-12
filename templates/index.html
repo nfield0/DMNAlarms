@@ -2,74 +2,74 @@
 {% block body %}
 {% if session.name %}
 <div class="main-wrapper">
-    <div class="em-box">
-        <div class="employeesTable">
-            <h1>All Employees</h1>
-            <div class="emNewButton">
-                <a href="/addEmployees"><h2>Add Employee</h2></a>
-                <a href="/register"><h2>Create Admin Account</h2></a>
+    <div class="main-wrapper-inner">
+        <div class="em-box">
+            <div class="employeesTable">
+                <h1>All Employees</h1>
+                <div class="emTable">
+                    <div class="emTableBody">
+                        {% for current in employees %}
+                        <div class="emTableRow">
+                            <div class="emLink"><a href="/viewEmployee/{{current[0]}}"></a></div>
+                            <div class="emImage"><img src="static/images/{{current[5]}}"/></div>
+                            <div class="emText">
+                                <div class="emID">{{ current[0] }}</div>
+                                <div class="emName">{{ current[1] }}</div>
+                                <div class="emEmail">{{ current[3] }}</div>
+                            </div>
+                            <div class="emButtons">
+                                <div class="emEditButton">
+                                    <form id="edit-form" action="/viewEditEmployee/{{current[0]}}" method="post">
+                                        <input autocomplete="off" autofocus name="employee_id" type="hidden"
+                                               value="{{current[0]}}">
+                                        <input autocomplete="off" autofocus type="submit" value="Edit">
+                                    </form>
+                                </div>
+                                <div class="emDeleteButton">
+                                    <form id="delete-form" action="/deleteEmployee" method="post">
+                                        <input autocomplete="off" autofocus name="employee_id" type="hidden"
+                                               value="{{current[0]}}">
+                                        <input autocomplete="off" autofocus type="submit" value="Delete">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="emTableBottom">
+                    <button id="clear_prints" autofocus value="Clear All Fingerprints" type="submit" onclick="clearPrints()">
+                        Clear All Prints
+                    </button>
+                    <a href="/addEmployees"><h2>Add Employee</h2></a>
+                    <a href="/register"><h2>Create Admin Account</h2></a>
+                </div>
             </div>
-            <div class="emTable">
-                <div class="emTableBody">
-                    {% for current in employees %}
+        </div>
+        <div class="f-box">
+            <h1>Log Fingerprints</h1>
+            <div>
+                <div class="emTable">
+                    {% for current in log %}
                     <div class="emTableRow">
-                        <div class="emLink"><a href="/viewEmployee/{{current[0]}}"></a></div>
-                        <div class="emImage"><img src="static/images/{{current[5]}}"/></div>
-                        <div class="emText">
-                            <div class="emID">{{ current[0] }}</div>
-                            <div class="emName">{{ current[1] }}</div>
-                            <div class="emEmail">{{ current[3] }}</div>
-                        </div>
-                        <div class="emButtons">
-                            <div class="emEditButton">
-                                <form id="edit-form" action="/viewEditEmployee/{{current[0]}}" method="post">
-                                    <input autocomplete="off" autofocus name="employee_id" type="hidden"
-                                           value="{{current[0]}}">
-                                    <input autocomplete="off" autofocus type="submit" value="Edit">
-                                </form>
-                            </div>
-                            <div class="emDeleteButton">
-                                <form id="delete-form" action="/deleteEmployee" method="post">
-                                    <input autocomplete="off" autofocus name="employee_id" type="hidden"
-                                           value="{{current[0]}}">
-                                    <input autocomplete="off" autofocus type="submit" value="Delete">
-                                </form>
-                            </div>
-                        </div>
+                        <div>{{current[0]}}</div>
+                        <div>{{current[1]}}</div>
+                        <div>{{current[2]}}</div>
+                        <div>{{current[3]}}</div>
                     </div>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="f-box">
-        <h1>Log Fingerprints</h1>
-        <div>
-            <div class="emTable">
-                {% for current in log %}
-                <div class="emTableRow">
-                    <div>{{current[0]}}</div>
-                    <div>{{current[1]}}</div>
-                    <div>{{current[2]}}</div>
-                    <div>{{current[3]}}</div>
-                </div>
-            {% endfor %}
+
             </div>
 
         </div>
-
     </div>
-    <button id="clear_prints" autofocus value="Clear All Fingerprints" type="submit" onclick="clearPrints()">
-                Clear All Prints
-      </button>
 </div>
 {% else %}
 <div class="dmn-logo-plc">
     <img src="static/images/logos/TripleFLogoBlueDRK.png">
-    <h1>test For Michael</h1>
 </div>
 {% endif %}
-
 
 
 {% endblock %}

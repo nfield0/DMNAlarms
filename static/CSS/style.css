@@ -165,6 +165,13 @@ body {
 }
 
 .main-wrapper {
+    width: 100%;
+    height: auto;
+    margin-bottom: 80px;
+    display: inline-block;
+}
+
+.main-wrapper-inner {
     width: 75%;
     margin: auto;
 }
@@ -193,21 +200,6 @@ body {
     padding-bottom: 10px;
     margin: 25px;
     border-bottom: 1px solid black;
-}
-
-.emNewButton {
-    position: absolute;
-    right: 25px;
-    top: 15px;
-    text-align: end;
-}
-
-.emNewButton h2 {
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: #0F55D0;
-    margin-bottom: 10px;
 }
 
 .emTable {
@@ -331,6 +323,39 @@ body {
     border-radius: 5px;
     border: none;
     background-color: #0F55D0;
+}
+
+.emTableBottom {
+    width: 100%;
+}
+
+.emTableBottom button {
+    border: 0;
+    margin-left: 25px;
+    margin-bottom: 25px;
+    height: 30px;
+    width: 120px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0F55D0;
+    cursor: pointer;
+    font-size: 15px;
+    color: white;
+}
+
+.emTableBottom h2 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    height: 30px;
+    width: 120px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0F55D0;
+    cursor: pointer;
+    font-size: 15px;
+    color: white;
+    display: inline-block;
 }
 
 .f-box {
@@ -480,5 +505,20 @@ body {
 
 /* Edit employees */
 
+footer {
+    height: 50px;
+    width: 100%;
+    z-index: 2;
+    position: fixed;
+    background-color: #FFFFFF;
+    bottom: 0;
+    box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
+}
 
+.footer-inner {
+    height: 100%;
+    width: 80%;
+    margin: auto;
+    position: relative;
+}
 
