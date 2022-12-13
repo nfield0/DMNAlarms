@@ -13,6 +13,18 @@
                 <h2>Email: {{employee[3]}}</h2>
             </div>
         </div>
+        <div class="view-employ-box-bottom">
+            <div class="emTable">
+                {% for current in log %}
+                <div class="emTableRow">
+                    <div>{{current[0]}}</div>
+                    <div>{{current[1]}}</div>
+                    <div>{{current[2]}}</div>
+                    <div>{{current[3]}}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% else %}

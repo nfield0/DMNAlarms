@@ -326,10 +326,13 @@ def viewOneEmployee(employee_id):
     cursor = mysql.connection.cursor()
     cursor.execute(''' SELECT * FROM employee_table WHERE employee_id = %s''', (emp_id,))
     employee = cursor.fetchone()
+    cursor.execute(''' SELECT DISTINCT ac.access_id, emp.employee_firstname, ac.employee_access_date, ac.employee_access_time FROM employee_access_table ac, employee_table emp WHERE ac.employee_id = %s''', (emp_id,))
+
+    log = cursor.fetchall()
     cursor.close()
     # encoded=[]
 
-    return render_template("viewOneEmployee.html", employee=employee)
+    return render_template("viewOneEmployee.html", employee=employee, log=log)
 
 
 @app.route("/addEmployees")

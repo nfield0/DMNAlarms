@@ -23,7 +23,7 @@
             <div class="header-login">
                 {% if session.name %}
                 <div class="logout-box">
-                    <h3>You are logged in as {{session.name}}</h3>
+                    <h3>You are logged in as <b>{{session.name}}</b></h3>
                     <a href="/logout"><h3>Log out</h3></a>
                 </div>
                 {% else %}
@@ -38,7 +38,7 @@
 {% endblock %}
 <footer>
     <div class="footer-inner">
-
+        <h1>© 2022 <abbr id="DMN" title="Reds Too Aggressive">DMN Systems</abbr> trading as Triple F Systems</h1>
     </div>
 </footer>
 </body>
