@@ -193,7 +193,7 @@ def show_drawn_text(name_for_auth, window_name):
     thickness = 6
 
     # Using cv2.putText() method
-    image = cv2.putText(img, "Welcome " + name_for_auth, org, font,
+    image = cv2.putText(img, "Unlocked for " + name_for_auth, org, font,
                         fontScale, color, thickness, cv2.LINE_AA)
     cv2.imshow(window_name, image)
     quitKey = cv2.waitKey(113)

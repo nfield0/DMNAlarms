@@ -9,14 +9,14 @@
 
             <form id="edit-form" action="/editEmployeeData/{{employee[0]}}" enctype="multipart/form-data" method="post">
                 <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden"
-                       value="{{employee[0]}}">
+                       value="{{employee[0]}}" required>
                 <input autocomplete="off" autofocus name="face_id" type="hidden" value="{{employee[7]}}">
                 <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname"
-                       type="text" value="{{employee[1]}}">
+                       type="text" value="{{employee[1]}}" required>
                 <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text"
-                       value="{{employee[2]}}">
+                       value="{{employee[2]}}" required>
                 <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text"
-                       value="{{employee[3]}}">
+                       value="{{employee[3]}}" required>
                 <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself"
                        type="file" value="(../static/images/Tripl3FCBlue.png)">
                 <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text"

@@ -433,6 +433,16 @@ body {
     position: relative;
 }
 
+.addem-box-inner form {
+    height: auto;
+    margin-bottom: 50px;
+}
+
+.addem-box-inner input{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .addem-box h1 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
     color: #0F55D0;
@@ -558,6 +568,7 @@ body {
 
 /* Edit employees */
 .editem-box {
+    display: grid;
     height: auto;
     width: 500px;
     margin: auto;
@@ -566,10 +577,18 @@ body {
     box-shadow: 0px 2px 20px rgb(0 0 0 / 10%);
 }
 
+.editem-box h1 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    color: #0F55D0;
+    font-weight: 500;
+    padding-bottom: 10px;
+    margin: 25px;
+}
+
 .editem-box-inner {
     width: 350px;
     height: auto;
-    padding-bottom: 80px;
+    padding-bottom: 50px;
     margin: auto;
     position: relative;
 }
