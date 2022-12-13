@@ -196,19 +196,6 @@ def show_drawn_text(name_for_auth):
     cv2.imshow(window_name, image)
     cv2.waitKey(0)
 
-# def main():
-#     #t2 = threading.Thread(target=ping_pubnub)
-#     #t2.daemon = True
-#     #t2.start()
-#     print("YEEhee")
-#
-#
-# if __name__ == '__main__':
-#     try:
-#         # t2 = threading.Thread(target=main)
-#         # t2.daemon = True
-#         # t2.start()
-#         #main()
 
 class SubscribeHandler(SubscribeCallback):
     def message(self, pubnub, message):
@@ -222,16 +209,3 @@ class SubscribeHandler(SubscribeCallback):
             show_drawn_text("allexx")
 
 pubnub.add_listener(SubscribeHandler())
-    #
-    # except KeyboardInterrupt:
-    #     print("\n\n Test finished ! \n")
-
-
-
-
-
-#
-
-
-#cap.release()
-#cv2.destroyAllWindows()

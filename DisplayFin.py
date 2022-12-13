@@ -79,87 +79,6 @@ class MySubscribeCallback(SubscribeCallback):
             elif eventData[key[0]] is False:
                 data["alarm"] = False
 
-
-
-
-
-
-
-
-
-
-
-#os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
-
-#p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
-
-#def play_success():
-   # p = vlc.MediaPlayer("file:///C://Users//nfeda//PycharmProjects//pythonProject2//successSound.mp3")
-   # p.play()
-import argparse
-
-# Load the cascade
-#face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-
-# window_name = "window"
-# interframe_wait_ms = 30
-#
-# # Captures video from laptop webcam
-# cap = cv2.VideoCapture(0)
-#
-# if not cap.isOpened():
-#     print("Error: Could not get video from camera.")
-#     exit()
-#
-# cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
-# cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-
-# Run this loop a few times so the person being recorded has a chance
-# to get their face squarer to the camera before the picture is taken
-# def start_camera_recog(loops):
-#     counter = 0
-#     while counter < loops:
-#         _, img = cap.read()
-#         # Convert to grayscale
-#         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         # Detect the faces
-#         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-#         # Draw the rectangle around each face
-#
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-#             roi_color = img[y:y + h, x:x + w]
-#
-#         cv2.imshow(window_name, img)
-#
-#         if cv2.waitKey(interframe_wait_ms) & 0x7F == ord('q'):
-#             print("Exit requested")
-#         counter+=1
-#
-# def capture_faces():
-#     captured_face = False
-#     while True:
-#         # Read the frame
-#         _, img = cap.read()
-#         # Convert to grayscale
-#         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         # Detect the faces
-#         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-#         # Draw the rectangle around each face
-#
-#         for (x, y, w, h) in faces:
-#             cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
-#             roi_color = img[y:y + h, x:x + w]
-#             cv2.imwrite(str(w) + str(h) + '_faces.jpg', roi_color)
-#             captured_face = True
-#
-#         # Display
-#         cv2.imshow(window_name, img)
-#         # Stop if escape key is pressed
-#         k = cv2.waitKey(33) & 0xff
-#         if captured_face:
-#             break
-
 def show_image_scan_finger(window_name):
     image = cv2.imread("screen_img.jpg")
     cv2.imshow(window_name, image)
@@ -200,49 +119,12 @@ def show_drawn_text(name_for_auth, window_name):
     if quitKey == 113:
         cv2.destroyAllWindows()
 
-# def main():
-#     #t2 = threading.Thread(target=ping_pubnub)
-#     #t2.daemon = True
-#     #t2.start()
-#     print("YEEhee")
-#
-#
-# if __name__ == '__main__':
-#     try:
-#         # t2 = threading.Thread(target=main)
-#         # t2.daemon = True
-#         # t2.start()
-#         #main()
-
-# class SubscribeHandler(SubscribeCallback):
-#     def message(self, pubnub, message):
-#         print("Message payload: %s" % message.message)
-#         print("Message publisher: %s" % message.publisher)
-#         name = message[1]
-#         print(message[1])
-#
-#         show_drawn_text(name)
-
-#pubnub.add_listener(SubscribeHandler())
-    #
-    # except KeyboardInterrupt:
-    #     print("\n\n Test finished ! \n")
 
 def main():
-    #show_image_scan_finger()
-    #show_drawn_text("name")
-    print("We in main")
+    print("scan finger for screen to pop up")
 
 class SubscribeHandler(SubscribeCallback):
-
-
-
     def message(self, pubnub, message):
-
-        # window_name = "window"
-        #
-        # cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
-        # cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
         print("Message payload: %s" % message.message)
         print("Message publisher: %s" % message.publisher)
@@ -276,8 +158,6 @@ class SubscribeHandler(SubscribeCallback):
             name_of_our_boi = message.message["Account"][name]
 
             show_drawn_text(name_of_our_boi, window_name)
-            #time.sleep(5)
-            #show_image_scan_finger(window_name)
             publish(myChannel, {"lock_state": 1})
         else:
             print("Message from PB ignored")
@@ -292,10 +172,3 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         print("\n\n Test finished ! \n")
-
-
-#
-
-
-#cap.release()
-#cv2.destroyAllWindows()

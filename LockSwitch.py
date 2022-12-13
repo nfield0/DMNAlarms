@@ -110,22 +110,9 @@ class SubscribeHandler(SubscribeCallback):
         else:
             print("PB msg ignored")
 
-
-
-#def publish(pub_channel, msg):
-    #pubnub.publish().channel(pub_channel).message(msg).pn_async(my_publish_callback)
-
-
-
-
-
-
 if __name__ == '__main__':
     pubnub.add_listener(SubscribeHandler())
-    #sensors_thread = threading.Thread()
-    #sensors_thread.start()
-    #pubnub.add_listener(MySubscribeCallback())
-    #pubnub.subscribe().channels(my_channel).execute()
+
 
 
 
