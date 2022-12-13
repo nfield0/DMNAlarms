@@ -1,39 +1,45 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if session.name %}
-<div class="addem-box">
-
-    <h1>Edit Employee {{employee[0]}}</h1>
-  <div class="addem-box-inner">
+<div class="main-wrapper">
+    <div class="editem-box">
+            <h1>Edit Employee {{employee[0]}}</h1>
+        <div class="addem-box-inner">
             <img src="../static/images/{{employee[5]}}" width="250px" height="250px"/>
 
-    <form id="edit-form" action="/editEmployeeData/{{employee[0]}}" enctype="multipart/form-data" method="post">
-      <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden" value="{{employee[0]}}">
-      <input autocomplete="off" autofocus name="face_id" type="hidden" value="{{employee[7]}}">
-      <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text" value="{{employee[1]}}">
-      <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text" value="{{employee[2]}}">
-      <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text" value="{{employee[3]}}">
-      <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="file" value="(../static/images/Tripl3FCBlue.png)">
-      <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text" value="{{employee[6]}}">
+            <form id="edit-form" action="/editEmployeeData/{{employee[0]}}" enctype="multipart/form-data" method="post">
+                <input autocomplete="off" autofocus name="employee_id" placeholder="Enter Firstname" type="hidden"
+                       value="{{employee[0]}}">
+                <input autocomplete="off" autofocus name="face_id" type="hidden" value="{{employee[7]}}">
+                <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname"
+                       type="text" value="{{employee[1]}}">
+                <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text"
+                       value="{{employee[2]}}">
+                <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text"
+                       value="{{employee[3]}}">
+                <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself"
+                       type="file" value="(../static/images/Tripl3FCBlue.png)">
+                <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text"
+                       value="{{employee[6]}}">
 
 
-      <input id="button-login" type="submit" value="Edit Employee">
-    </form>
-<button id="register_finger" autofocus name="fingerprint" value="Register Fingerprint" type="submit" onclick="registerPrint()">
-          Add new fingerprint from scanner
-      </button>
+                <input id="button-login" type="submit" value="Edit Employee">
+            </form>
+            <button id="register_finger" autofocus name="fingerprint" value="Register Fingerprint" type="submit"
+                    onclick="registerPrint()">
+                Add new fingerprint from scanner
+            </button>
 
 
+            <br>
+            <br>
 
-      <br>
-      <br>
-
-  </div>
-</div>
-{% else %}
+        </div>
+    </div>
+    {% else %}
     You are not logged in.<a href="/login">Log in</a>
-{% endif %}
-
+    {% endif %}
+</div>
 
 
 {% endblock %}

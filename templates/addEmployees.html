@@ -5,10 +5,10 @@
     <h1>Reigster an Employee</h1>
     <div class="addem-box-inner">
         <form id="register-form" action="/registerEmployee" enctype="multipart/form-data" method="post">
-            <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text">
-            <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text">
-            <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text">
-            <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="file">
+            <input id="fir-box" autocomplete="off" autofocus name="firstname" placeholder="Enter Firstname" type="text" required>
+            <input id="sur-box" autocomplete="off" autofocus name="surname" placeholder="Enter Surname" type="text" required>
+            <input id="em-box" autocomplete="off" autofocus name="email" placeholder="Enter Email" type="text" required>
+            <input id="face-box" autocomplete="off" autofocus name="face" placeholder="Upload image of yourself" type="file" required>
             <input id="fingerprint-box" autocomplete="off" autofocus name="finger" placeholder="0" type="text">
             <input id="button-login" type="submit" value="Register Employee">
         </form>
