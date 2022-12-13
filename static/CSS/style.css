@@ -501,7 +501,7 @@ body {
 .view-employ-box-right {
     width: 74%;
     margin-left: 1%;
-    height: 280px;
+    height: 250px;
     float: right;
     display: inline-block;
     border-radius: 5px;
@@ -543,6 +543,15 @@ body {
     height: 200px;
     margin: auto;
     margin-bottom: 50px;
+    margin-left: 25px;
+}
+
+.view-employ-txt h2 {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    color: black;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 20px;
 }
 
 .view-employ-box-bottom {
