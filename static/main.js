@@ -101,15 +101,22 @@ function handleClick(cb){
 	publishMessage(cb.id+"-"+value);
 }
 
+function sleepMode() {
+
+	publishMessage("CMD5")
+}
+
 function registerPrint()
 {
 
 	publishMessage("CMD2")
 	console.log()
+	setTimeout(sleepMode, 3000);
 }
 function clearPrints(){
 
 	publishMessage("CMD4")
+	setTimeout(sleepMode, 3000);
 }
 
 window.onload = setupPubNub;

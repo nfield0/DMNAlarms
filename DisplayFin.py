@@ -100,10 +100,10 @@ def show_drawn_text(name_for_auth, window_name):
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     # org
-    org = (50, 50)
+    org = (50, 250)
 
     # fontScale
-    fontScale = 1
+    fontScale = 2
 
     # Blue color in BGR
     color = (255, 0, 0)

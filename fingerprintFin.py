@@ -7,7 +7,6 @@ import threading
 import sys
 import RPi.GPIO as GPIO
 
-
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory, PNOperationType
 from pubnub.pnconfiguration import PNConfiguration
@@ -57,7 +56,7 @@ CMD_SET_OR_QUERY_COMPARISON_LEVEL = 40
 CMD_SLEEP_MODE = 44
 CMD_TIMEOUT = 46
 
-CMD_FINGER_DETECTED = 20 # NOT FOUND IN DOCUMENTATION
+CMD_FINGER_DETECTED = 20  # NOT FOUND IN DOCUMENTATION
 
 Finger_WAKE_Pin = 23
 Finger_RST_Pin = 24
@@ -69,22 +68,24 @@ GPIO.setup(Finger_RST_Pin, GPIO.OUT)
 GPIO.setup(Finger_RST_Pin, GPIO.OUT)
 GPIO.output(Finger_RST_Pin, GPIO.HIGH)
 
-g_rx_buf = []   #RXD
+g_rx_buf = []  # RXD
 latest_scanned_id = 0
-PC_Command_RxBuf = []   #Figure OUT
+PC_Command_RxBuf = []  # Figure OUT
 Finger_SleepFlag = 0
 
 # rLock = threading.RLock()     Was here before i did anything
 ser = serial.Serial(port="/dev/ttyS0", baudrate=19200, parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE, write_timeout=None, timeout=None, bytesize=8)
-#Set up serial connection, cts and rts also available params
+
+
+# Set up serial connection, cts and rts also available params
 
 
 # ***************************************************************************
 # @brief    send a command, and wait for the response of module
 # ***************************************************************************/
 
-def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 8, 0.1
+def TxAndRxCmd(command_buf, rx_bytes_need, timeout):  # [0x28, 0, level, 0, 0] , 8, 0.1
     global g_rx_buf
     CheckSum = 0
     tx_buf = []
@@ -92,7 +93,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 
 
     print("COMMAND BUFFER: ", command_buf)
 
-    tx_buf.append(CMD_HEAD) # [0xF5]
+    tx_buf.append(CMD_HEAD)  # [0xF5]
     for int_val in command_buf:
         tx_buf.append(int_val)
         CheckSum ^= int_val
@@ -105,9 +106,9 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 
         print(i)
         tx += i.to_bytes(1, "big")
 
-    ser.reset_input_buffer()        # Old flushInput() is deprecated
+    ser.reset_input_buffer()  # Old flushInput() is deprecated
 
-    print("TYPE OF TX NOW!!!: ",type(tx))
+    print("TYPE OF TX NOW!!!: ", type(tx))
     print("TX NOW: ", tx)
 
     print("Byte String TX: : ", tx)
@@ -119,7 +120,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 
     time_before = time.time()
     time_after = time.time()
     while time_after - time_before < timeout and len(g_rx_buf) < rx_bytes_need:  # Waiting for response
-        bytes_can_recv = ser.in_waiting       #Old method deprecated
+        bytes_can_recv = ser.in_waiting  # Old method deprecated
         if bytes_can_recv != 0:
             g_rx_buf += ser.read(bytes_can_recv)
         time_after = time.time()
@@ -140,7 +141,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 
         print(g_rx_buf[1])
         print(tx_buf[1])
         print("RET 4")
-        return ACK_FAIL                     #STOPPED HERE#################################
+        return ACK_FAIL  # STOPPED HERE#################################
 
     CheckSum = 0
     for index, byte in enumerate(g_rx_buf):
@@ -153,6 +154,7 @@ def TxAndRxCmd(command_buf, rx_bytes_need, timeout): # [0x28, 0, level, 0, 0] , 
         CheckSum ^= byte
     print("RET 6")
     return ACK_SUCCESS
+
 
 # ***************************************************************************
 # @brief    Get Compare Level
@@ -169,6 +171,7 @@ def GetCompareLevel():
         return g_rx_buf[3]
     else:
         return 0xFF
+
 
 def SetCompareLevel(level):
     global g_rx_buf
@@ -194,6 +197,7 @@ def GetUserCount():
     else:
         return 0xFF
 
+
 # ***************************************************************************
 # @brief   Get the time that fingerprint collection wait timeout
 # ***************************************************************************/
@@ -208,56 +212,101 @@ def GetTimeOut():
     else:
         return 0xFF
 
+
 # ***************************************************************************
 # @brief    Register fingerprint
 # ***************************************************************************/
+
+#def run_it():
+    #Analysis_PC_Command("CMD5")
+
+
+# def AddUser():
+#     print("ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD")
+#
+#     global g_rx_buf
+#     r = GetUserCount()
+#     # if r >= USER_MAX_CNT:
+#     # return ACK_FULL
+#     print("ttttttttttttttttttttttttt", g_rx_buf[4])
+#     count = 0
+#     return_var = ""
+#
+#     #while r != ACK_SUCCESS and g_rx_buf[4] != ACK_SUCCESS or count < 5:
+#     while r != ACK_SUCCESS or count < 5:
+#         command_buf = [CMD_ADD_1, 0, r + 1, 3, 0]
+#         r = TxAndRxCmd(command_buf, 8, 6)
+#         print(g_rx_buf)
+#         print("ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD ADD")
+#         print("****************************")
+#         if r == ACK_TIMEOUT:
+#             return_var = ACK_TIMEOUT
+#         if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
+#             command_buf[0] = CMD_ADD_3
+#             r = TxAndRxCmd(command_buf, 8, 6)
+#             latest_scanned_id = g_rx_buf[3]
+#             nvar = r + 1
+#             publish(myChannel, {"finger_scanner_new": GetUserCount()})
+#             print(g_rx_buf)
+#             time.sleep(2)
+#             # Analysis_PC_Command("CMD5")
+#             # run_it()
+#             # print("Change to cmd5")
+#             if r == ACK_TIMEOUT:
+#                 return_var = ACK_TIMEOUT
+#             if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
+#                 return_var = ACK_SUCCESS
+#             else:
+#                 return_var = ACK_FAIL
+#         else:
+#             return_var = ACK_FAIL
+#         count += 1
+#
+#     print("RETURNINGGGGGGGGGGGGGGGGGG: ", return_var)
+#     return return_var
+
+
 def AddUser():
     global g_rx_buf
     r = GetUserCount()
     if r >= USER_MAX_CNT:
         return ACK_FULL
-    count = 0
-    return_var = ""
 
-    while r != ACK_SUCCESS and g_rx_buf[4] != ACK_SUCCESS or count < 5:
-        command_buf = [CMD_ADD_1, 0, r + 1, 3, 0]
+    command_buf = [CMD_ADD_1, 0, r + 1, 3, 0]
+    print(g_rx_buf)
+    r = TxAndRxCmd(command_buf, 8, 6)
+    if r == ACK_TIMEOUT:
+        return ACK_TIMEOUT
+    if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
+        command_buf[0] = CMD_ADD_3
         r = TxAndRxCmd(command_buf, 8, 6)
         print(g_rx_buf)
-        print("****************************")
+        publish(myChannel, {"finger_scanner_new": GetUserCount()})
+        time.sleep(2)
         if r == ACK_TIMEOUT:
-            return_var = ACK_TIMEOUT
+            return ACK_TIMEOUT
         if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
-            command_buf[0] = CMD_ADD_3
-            r = TxAndRxCmd(command_buf, 8, 6)
-            latest_scanned_id = g_rx_buf[3]
-            nvar = r+1
-            publish(myChannel, {"finger_scanner_new": GetUserCount()})
-            print(g_rx_buf)
-            Analysis_PC_Command("CMD5")
-            print("Change to cmd5")
-            if r == ACK_TIMEOUT:
-                return_var = ACK_TIMEOUT
-            if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
-                return_var = ACK_SUCCESS
-            else:
-                return_var = ACK_FAIL
+            return ACK_SUCCESS
         else:
-            return_var = ACK_FAIL
-        count += 1
-
-    return return_var
+            return ACK_FAIL
+    else:
+        return ACK_FAIL
 
 
 # ***************************************************************************
 # @brief    Clear fingerprints
 # ***************************************************************************/
 def ClearAllUser():
+    print("gagagagagagagagagaggaaggagagagag")
     global g_rx_buf
     command_buf = [CMD_DEL_ALL, 0, 0, 0, 0]
     r = TxAndRxCmd(command_buf, 8, 5)
     if r == ACK_TIMEOUT:
         return ACK_TIMEOUT
     if r == ACK_SUCCESS and g_rx_buf[4] == ACK_SUCCESS:
+        # Analysis_PC_Command("CMD5")
+        # print("Change to cmd5")
+        publish(myChannel, {"finger_prints_removed": 1})
         return ACK_SUCCESS
     else:
         return ACK_FAIL
@@ -271,6 +320,7 @@ def IsMasterUser(user_id):
         return TRUE
     else:
         return FALSE
+
 
 # ***************************************************************************
 # @brief    Fingerprint matching
@@ -315,6 +365,7 @@ def Analysis_PC_Command(command):
                 "Failed: Please try to place the center of the fingerprint flat to sensor, or this fingerprint already exists !")
         elif r == ACK_FULL:
             print("Failed: The fingerprint library is full !")
+            Analysis_PC_Command("CMD5")
     elif command == "CMD3" and Finger_SleepFlag != 1:
         print("Waiting Finger......Please try to place the center of the fingerprint flat to sensor !")
         r = VerifyUser()
@@ -348,6 +399,8 @@ def Analysis_PC_Command(command):
 # ***************************************************************************/
 def Auto_Verify_Finger():
     while True:
+        # print("INSIDE")
+        # time.sleep(3)
         if Finger_SleepFlag == 1:
             if GPIO.input(Finger_WAKE_Pin) == 1:  # If you press your finger
                 time.sleep(0.01)
@@ -359,8 +412,8 @@ def Auto_Verify_Finger():
                     r = VerifyUser()
                     if r == ACK_SUCCESS:
                         print("Matching successful !")
-                        #Finger_SleepFlag = 1
-                        #break
+                        # Finger_SleepFlag = 1
+                        # break
                     elif r == ACK_NO_USER:
                         print("Failed: This fingerprint was not found in the library !")
                     elif r == ACK_TIMEOUT:
@@ -372,8 +425,6 @@ def Auto_Verify_Finger():
                     # and continue to wait for your fingers to press
                     GPIO.output(Finger_RST_Pin, GPIO.LOW)
         time.sleep(0.2)
-
-
 
 
 def main():
@@ -406,16 +457,16 @@ def main():
 
     global latest_scanned_id
 
-
-
-
-
     # while True:
     #     print("Latest Scanned ID: ", latest_scanned_id)
     #     str = input("Please input command (CMD1-CMD6):")
     #     Analysis_PC_Command(str)
+    # def run_it():
+    #     Analysis_PC_Command("CMD5")
+
     Analysis_PC_Command("CMD5")
-    #Analysis_PC_Command("CMD3")
+
+    # Analysis_PC_Command("CMD3")
 
 
 class SubscribeHandler(SubscribeCallback):
@@ -423,35 +474,34 @@ class SubscribeHandler(SubscribeCallback):
         print("Message payload: %s" % message.message)
         print("Message publisher: %s" % message.publisher)
 
+        msg = message.message
 
-        if message.publisher == "serverJS":
-            print(message.message['description'])
-        if message.message['title'] == "Command":
-            Analysis_PC_Command("CMD6")
-            time.sleep(5)
-            Analysis_PC_Command(message.message['description'])
+        #if message.publisher == "serverJS":
+            #print(message.message['description'])
 
-        #msg = message.message
+        key = list(msg.keys())
+        if key[0] == "title":
 
-        Analysis_PC_Command("CMD5")
+            if message.message['title'] == "Command":
+                Analysis_PC_Command("CMD6")
+                time.sleep(1)
+                Analysis_PC_Command(message.message['description'])
+                    ##time.sleep(2)
+        #Analysis_PC_Command("CMD5")
+        # msg = message.message
+        # time.sleep(2)
+        # Analysis_PC_Command("CMD5")
 
-
-
-
-
-        #key = list(msg.keys())
-        #if key[0] == "Account":
-            #print("Account matched")
-            ##start facial recognition
-
-
-
-
+        # key = list(msg.keys())
+        # if key[0] == "Account":
+        # print("Account matched")
+        ##start facial recognition
 
 
-#pubnub
+# pubnub
 def publish(custom_channel, msg):
     pubnub.publish().channel(custom_channel).message(msg).pn_async(my_publish_callback)
+
 
 def my_publish_callback(envelope, status):
     # Check whether request successfully completed or not
@@ -491,13 +541,12 @@ class MySubscribeCallback(SubscribeCallback):
             print(message.message)
             msg = message.message
             key = list(msg.keys())
-            if key[0] == "event":       #{"event" : {"sensor_name" : True}}
+            if key[0] == "event":  # {"event" : {"sensor_name" : True}}
                 self.handleEvent(msg)
         except Exception as e:
             print("Received: ", message.message)
             print(e)
             pass
-
 
     def handleEvent(self, msg):
         global data

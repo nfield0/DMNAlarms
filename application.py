@@ -1,5 +1,6 @@
 import os
 import socket
+import time
 
 from dateutil.utils import today
 from flask import Flask, redirect, render_template, request, session
@@ -114,27 +115,30 @@ class MySubscribeCallback(SubscribeCallback):
                 print("FINGERID : ",fingerID)
                 cur.execute(''' SELECT employee_id, employee_firstname, employee_surname FROM employee_table where fingerprint_id = {0}'''.format(fingerID))
                 account = cur.fetchone()
-                print(account[0])
-                currentDay = today()
-                currentTime = datetime.now().time()
-                print(message.message['finger_scanner'])
-                cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''',
+                if account:
+                    print(account[0])
+                    currentDay = today()
+                    currentTime = datetime.now().time()
+                    print(message.message['finger_scanner'])
+                    cur.execute(''' INSERT INTO employee_access_table VALUES(null,%s,%s,%s)''',
                             (currentDay, currentTime, account[0]))
+
+
+
+
+                    accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2]}
+                    print(accDetails)
+                    publish(myChannel, {"Account": accDetails})
                 mysql.connection.commit()
                 cur.close()
-
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("8.8.8.8", 80))
-                current_ip = s.getsockname()[0]
-                s.close()
-
-                accDetails = {"id": account[0], "firstName": account[1], "secondName": account[2]}
-                print(accDetails)
-                publish(myChannel, {"Account": accDetails})
-
             elif key[0] == "finger_scanner_new":
                 print("new finger Scanned")
-
+                time.sleep(2)
+                publish(myChannel, {'title': 'Command', 'description': 'CMD5'})
+            elif key[0] == "finger_prints_removed":
+                print("fingerprints removed")
+                time.sleep(3)
+                publish(myChannel, {'title': 'Command', 'description': 'CMD5'})
             else:
                 print("Neither scan nor match")
 
